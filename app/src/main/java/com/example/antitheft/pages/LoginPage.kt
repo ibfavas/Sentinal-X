@@ -1,8 +1,13 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.antitheft.pages
 
 import android.app.Activity
+import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +53,10 @@ import androidx.navigation.NavController
 import com.example.antitheft.AuthState
 import com.example.antitheft.AuthViewModel
 import com.example.antitheft.R
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 
 @Composable
 fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
@@ -58,6 +67,24 @@ fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authV
 
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
+
+    val googleSignInClient = remember{ getGoogleSignInClient(context) }
+
+
+    // Launcher for handling the result of the sign-in intent
+    val signInLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                account?.idToken?.let { idToken ->
+                    authViewModel.signInWithGoogle(idToken)
+                }
+            } catch (e: ApiException) {
+                Toast.makeText(context, "Google sign-in failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
@@ -179,14 +206,25 @@ fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authV
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ){
-                Image(painter = painterResource(id = R.drawable.google),
-                    contentDescription = "Google",
-                    modifier = Modifier
-                        .clickable { println("Google Clicked") }
-                        .width(150.dp)
+                Image(
+                    painterResource(id = R.drawable.google),
+                    contentDescription = "Google Sign-In",
+                    modifier = Modifier.clickable {
+                        val signInIntent = googleSignInClient.signInIntent
+                        signInLauncher.launch(signInIntent)
+                    }.width(150.dp)
                 )
 
             }
         }
     }
+}
+
+fun getGoogleSignInClient(context: Context): GoogleSignInClient {
+    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.backend_client_id))
+        .requestEmail()
+        .build()
+
+    return GoogleSignIn.getClient(context, signInOptions)
 }

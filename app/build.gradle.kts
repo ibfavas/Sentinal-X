@@ -94,5 +94,9 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.material3.v120)
     implementation (platform(libs.androidx.compose.bom.v20240100))
+    implementation(libs.androidx.credentials)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
 }

@@ -3,6 +3,8 @@ package com.example.antitheft.pages
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +50,8 @@ import androidx.navigation.NavController
 import com.example.antitheft.AuthState
 import com.example.antitheft.AuthViewModel
 import com.example.antitheft.R
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 
 @Composable
 
@@ -64,6 +68,22 @@ fun SignupPage(modifier: Modifier=Modifier, navController: NavController, authVi
 
     val authState=authViewModel.authState.observeAsState()
     val context= LocalContext.current
+
+    val googleSignInClient = remember{ getGoogleSignInClient(context) }
+
+    val signInLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                account?.idToken?.let { idToken ->
+                    authViewModel.signInWithGoogle(idToken)
+                }
+            } catch (e: ApiException) {
+                Toast.makeText(context, "Google sign-in failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     LaunchedEffect(authState.value) {
         when(authState.value){
@@ -94,7 +114,8 @@ fun SignupPage(modifier: Modifier=Modifier, navController: NavController, authVi
 
             Spacer(modifier = Modifier.height(240.dp))
 
-            Text(text = "SIGNUP",
+            Text(
+                text = "SIGNUP",
                 fontSize = 26.sp,
                 color = Color.Black
             )
@@ -114,9 +135,10 @@ fun SignupPage(modifier: Modifier=Modifier, navController: NavController, authVi
                 ),
                 singleLine = true,
                 label = {
-                    Text(text = "Email",
+                    Text(
+                        text = "Email",
                         color = Color.Black
-                        )
+                    )
                 }
             )
 
@@ -125,9 +147,12 @@ fun SignupPage(modifier: Modifier=Modifier, navController: NavController, authVi
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password",
-                    color = Color.Black
-                    ) },
+                label = {
+                    Text(
+                        "Password",
+                        color = Color.Black
+                    )
+                },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.Black,
@@ -144,9 +169,12 @@ fun SignupPage(modifier: Modifier=Modifier, navController: NavController, authVi
             OutlinedTextField(
                 value = confirmpassword,
                 onValueChange = { confirmpassword = it },
-                label = { Text("Confirm Password",
-                    color = Color.Black
-                    ) },
+                label = {
+                    Text(
+                        "Confirm Password",
+                        color = Color.Black
+                    )
+                },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.Black,
@@ -162,7 +190,8 @@ fun SignupPage(modifier: Modifier=Modifier, navController: NavController, authVi
                     else Icons.Filled.VisibilityOff
 
                     // Please provide localized description for accessibility services
-                    val description = if (confirmpasswordVisible) "Hide password" else "Show password"
+                    val description =
+                        if (confirmpasswordVisible) "Hide password" else "Show password"
 
                     IconButton(onClick = { confirmpasswordVisible = !confirmpasswordVisible }) {
                         Icon(imageVector = image, description)
@@ -174,7 +203,8 @@ fun SignupPage(modifier: Modifier=Modifier, navController: NavController, authVi
 
             Button(onClick = {
                 if (email.isBlank() || password.isBlank() || confirmpassword.isBlank()) {
-                    Toast.makeText(context, "Please enter valid credentials", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Please enter valid credentials", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
                     authViewModel.signup(email, password, confirmpassword)
                 }
@@ -191,26 +221,28 @@ fun SignupPage(modifier: Modifier=Modifier, navController: NavController, authVi
                     }
                 }
             }) {
-                Text(text = "Already have an account? Login!",
+                Text(
+                    text = "Already have an account? Login!",
                     color = Color.Black
                 )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Row (
+
+            Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceEvenly
-            ){
-                Image(painter = painterResource(id = R.drawable.google),
-                    contentDescription = "Google",
-                    modifier = Modifier
-                        .clickable { println("Google Clicked") }
-                        .width(150.dp)
+            ) {
+                Image(
+                    painterResource(id = R.drawable.google),
+                    contentDescription = "Google Sign-In",
+                    modifier = Modifier.clickable {
+                        val signInIntent = googleSignInClient.signInIntent
+                        signInLauncher.launch(signInIntent)
+                    }.width(150.dp)
                 )
-
             }
-
         }
     }
 }
