@@ -5,8 +5,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.antitheft.pages.AppSetup
+import com.example.antitheft.pages.DataBackup
+import com.example.antitheft.pages.Help
 import com.example.antitheft.pages.HomePage
 import com.example.antitheft.pages.LoginPage
+import com.example.antitheft.pages.Profile
+import com.example.antitheft.pages.Settings
 import com.example.antitheft.pages.SignupPage
 import com.example.antitheft.pages.SplashScreen
 
@@ -26,6 +31,21 @@ fun  AppNavigation(modifier: Modifier=Modifier,authViewModel: AuthViewModel){
         }
         composable("home") {
             HomePage(modifier,navController,authViewModel)
+        }
+        composable("profile") {
+            Profile(modifier, navController, authViewModel)
+        }
+        composable("databackup") {
+            DataBackup(modifier,navController,authViewModel)
+        }
+        composable("appsetup") {
+            AppSetup(modifier,navController,authViewModel)
+        }
+        composable("help") {
+            Help(modifier,navController,authViewModel)
+        }
+        composable("settings") {
+            Settings(modifier,navController,authViewModel)
         }
     })
 
