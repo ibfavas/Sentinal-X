@@ -17,6 +17,7 @@ class AuthViewModel : ViewModel() {
         checkAuthStatus()
     }
 
+    // Check if user is already authenticated
     fun checkAuthStatus() {
         if (auth.currentUser != null) {
             _authState.value = AuthState.Authenticated
@@ -25,6 +26,7 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    // Handle user login with email and password
     fun login(email: String, password: String) {
         _authState.value = AuthState.Loading
         auth.signInWithEmailAndPassword(email, password)
@@ -37,8 +39,9 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun signup(email: String, password: String, confirmpassword: String) {
-        if (password != confirmpassword) {
+    // Handle user signup with email, password, and confirm password
+    fun signup(email: String, password: String, confirmPassword: String) {
+        if (password != confirmPassword) {
             _authState.value = AuthState.Error("Passwords do not match")
             return
         }
@@ -53,16 +56,18 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-
-    fun signout(){
+    // Handle sign-out
+    fun signout() {
         auth.signOut()
         _authState.value = AuthState.Unauthenticated
     }
 
+    // Check if the user is logged in
     fun isUserLoggedIn(): Boolean {
-        return FirebaseAuth.getInstance().currentUser != null
+        return auth.currentUser != null
     }
 
+    // Handle Google Sign-In with an ID token
     fun signInWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         _authState.value = AuthState.Loading
@@ -76,15 +81,12 @@ class AuthViewModel : ViewModel() {
                 }
             }
     }
-
-
 }
 
-
-sealed class AuthState{
-    object Authenticated : AuthState()
-    object Unauthenticated : AuthState()
-    object Loading : AuthState()
-    data class Error(val message: String) : AuthState()
-
+// Sealed class representing authentication states
+sealed class AuthState {
+    object Authenticated : AuthState() // User is authenticated
+    object Unauthenticated : AuthState() // User is unauthenticated
+    object Loading : AuthState() // Indicates a loading state during auth process
+    data class Error(val message: String) : AuthState() // Represents an error with a message
 }

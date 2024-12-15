@@ -1,5 +1,7 @@
 package com.example.antitheft
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -15,6 +17,7 @@ import com.example.antitheft.pages.Settings
 import com.example.antitheft.pages.SignupPage
 import com.example.antitheft.pages.SplashScreen
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun  AppNavigation(modifier: Modifier=Modifier,authViewModel: AuthViewModel){
     val navController = rememberNavController()
@@ -33,7 +36,7 @@ fun  AppNavigation(modifier: Modifier=Modifier,authViewModel: AuthViewModel){
             HomePage(modifier,navController,authViewModel)
         }
         composable("profile") {
-            Profile(modifier, navController, authViewModel)
+            Profile(modifier,navController,authViewModel)
         }
         composable("databackup") {
             DataBackup(modifier,navController,authViewModel)

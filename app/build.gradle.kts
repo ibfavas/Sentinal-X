@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -100,5 +102,14 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.firebase.storage)
+    implementation(libs.google.firebase.firestore)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.permissions.v0280)
+    implementation(libs.firebase.auth.v2101)
+    implementation(libs.play.services.auth.v1900)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.messaging.ktx)
+
 
 }
