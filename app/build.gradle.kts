@@ -110,6 +110,7 @@ dependencies {
     implementation(libs.play.services.auth.v1900)
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.coil.kt.coil.compose)
 
 
 }

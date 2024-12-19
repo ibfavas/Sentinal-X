@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Sentinel-X</string>
     <string name="backend_client_id">852275642125-tirbnlspvb7gksn86b2hdj77cllbeap3.apps.googleusercontent.com</string>
+    <string name="profile_image">Profile Image</string>
 </resources>

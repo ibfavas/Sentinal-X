@@ -10,17 +10,16 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -68,8 +67,6 @@ fun HomePage(
 ) {
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
 
     var userName by remember { mutableStateOf("Loading...") }
     var userImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -78,21 +75,21 @@ fun HomePage(
     LaunchedEffect(Unit) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            // Proceed with Firestore operation
             val db = FirebaseFirestore.getInstance()
-
             db.collection("users").document(userId).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
                         userName = document.getString("name") ?: "Unknown User"
-                        userImageUri = document.getString("profileImageUrl")?.let { Uri.parse(it) }
+                        userImageUri = document.getString("profileImageUrl")?.let(Uri::parse)
+                    } else {
+                        // Handle case where the document does not exist
+                        userName = "Unknown User"
                     }
                 }
                 .addOnFailureListener {
                     Toast.makeText(context, "Failed to fetch user data", Toast.LENGTH_SHORT).show()
                 }
         } else {
-            // Handle authentication error
             Toast.makeText(context, "User is not authenticated", Toast.LENGTH_SHORT).show()
             navController.navigate("login") {
                 popUpTo("home") { inclusive = true }
@@ -108,12 +105,10 @@ fun HomePage(
                     popUpTo("home") { inclusive = true }
                 }
             }
-
             is AuthState.Error -> {
                 val errorMessage = state.message
                 Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
             }
-
             else -> Unit
         }
     }
@@ -123,7 +118,10 @@ fun HomePage(
         (context as? Activity)?.finish()
     }
 
-    // Drawer Items
+    val localImageUri = fetchLocalImage(context)
+
+    val profileImageUri = localImageUri ?: userImageUri
+
     val drawerItems = listOf(
         NavScreens.HomePage,
         NavScreens.Profile,
@@ -132,6 +130,53 @@ fun HomePage(
         NavScreens.Help,
         NavScreens.Settings
     )
+
+    DrawerScaffold(
+        title = "Welcome to Sentinel X",
+        navController = navController,
+        drawerItems = drawerItems,
+        userName = userName,
+        userImageUri = profileImageUri,
+        onLogout = { authViewModel.signout() }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(Color.Black)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Welcome to the Home Page",
+                    color = Color.White,
+                    style = MaterialTheme.typography.body1
+                )
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun DrawerScaffold(
+    title: String,
+    navController: NavController,
+    drawerItems: List<NavScreens>,
+    userName: String,
+    userImageUri: Uri?,
+    onLogout: () -> Unit,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -172,7 +217,7 @@ fun HomePage(
 
                     // User Name
                     Text(
-                        text = userName, // Dynamically fetched name
+                        text = userName,
                         style = MaterialTheme.typography.subtitle1.copy(color = Color.White),
                         modifier = Modifier.padding(bottom = 16.dp),
                         textAlign = TextAlign.Center
@@ -182,9 +227,11 @@ fun HomePage(
                     drawerItems.forEach { screen ->
                         Button(
                             onClick = {
-                                if (navController.currentDestination?.route != screen.screen) {
+                                val currentRoute = navController.currentBackStackEntry?.destination?.route
+                                if (currentRoute != screen.screen) {
                                     navController.navigate(screen.screen) {
                                         launchSingleTop = true
+                                        popUpTo(currentRoute ?: screen.screen) { inclusive = true }
                                     }
                                 }
                                 coroutineScope.launch {
@@ -196,27 +243,32 @@ fun HomePage(
                                 .height(50.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.DarkGray,
-                                contentColor = Color.White,
-                                disabledContainerColor = Color.Black,
-                                disabledContentColor = Color.White
-                            ),
+                                contentColor = Color.White
+                            )
                         ) {
                             Text(
-                                text = screen.screen.replaceFirstChar { it.uppercase() },
+                                text = screen.screen.split(" ")
+                                    .joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } },
                                 color = Color.White
                             )
+
                         }
+
                     }
 
                     Spacer(modifier = Modifier.weight(1f)) // Push logout button to the bottom
 
+                    // Logout Button
                     Button(
-                        onClick = { authViewModel.signout() },
+                        onClick = {
+                            onLogout()
+                            coroutineScope.launch {
+                                scaffoldState.drawerState.close()
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Gray,
-                            contentColor = Color.White,
-                            disabledContainerColor = Color.Black,
-                            disabledContentColor = Color.White
+                            contentColor = Color.White
                         )
                     ) {
                         Text(text = "Logout", color = Color.White)
@@ -224,12 +276,9 @@ fun HomePage(
                 }
             }
         },
-        drawerBackgroundColor = Color.Black,
-        drawerShape = RoundedCornerShape(0.dp),
-        backgroundColor = Color.Black,
         topBar = {
             TopAppBar(
-                title = { Text(text = "Welcome to Sentinel X", color = Color.White) },
+                title = { Text(text = title, color = Color.White) },
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -241,29 +290,12 @@ fun HomePage(
                         Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
                     }
                 },
-                backgroundColor = Color.Black,
-                modifier = Modifier.height(80.dp)
+                backgroundColor = Color.Black
             )
-        }
+        },
+        drawerBackgroundColor = Color.Black,
+        backgroundColor = Color.Black
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(color = Color.Black)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Welcome to the Home Page",
-                    color = Color.White
-                )
-            }
-        }
+        content(innerPadding)
     }
 }

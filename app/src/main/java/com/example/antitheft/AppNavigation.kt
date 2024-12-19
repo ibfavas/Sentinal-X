@@ -38,10 +38,10 @@ fun  AppNavigation(modifier: Modifier=Modifier,authViewModel: AuthViewModel){
         composable("profile") {
             Profile(modifier,navController,authViewModel)
         }
-        composable("databackup") {
+        composable("data backup") {
             DataBackup(modifier,navController,authViewModel)
         }
-        composable("appsetup") {
+        composable("app setup") {
             AppSetup(modifier,navController,authViewModel)
         }
         composable("help") {

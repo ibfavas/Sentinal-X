@@ -4,8 +4,6 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -38,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import coil3.compose.rememberAsyncImagePainter
 import com.example.antitheft.AuthViewModel
@@ -50,18 +47,28 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
+import com.example.antitheft.ui.NavScreens
+
+
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun <NavHostController> Profile(modifier: Modifier, navController: NavHostController, authViewModel: AuthViewModel) {
-    val user = FirebaseAuth.getInstance().currentUser
+fun Profile(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    authViewModel: AuthViewModel
+) {
     val context = LocalContext.current
+    val user = FirebaseAuth.getInstance().currentUser
     var name by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
     var dob by remember { mutableStateOf("") }
@@ -71,51 +78,50 @@ fun <NavHostController> Profile(modifier: Modifier, navController: NavHostContro
     var confirmPassword by remember { mutableStateOf("") }
 
     // Request permissions for reading external storage and camera
-    val permissionStateStorage =
-        rememberPermissionState(permission = Manifest.permission.READ_MEDIA_IMAGES)
+    val permissionStateStorage = rememberPermissionState(permission = Manifest.permission.READ_MEDIA_IMAGES)
     val permissionStateCamera = rememberPermissionState(permission = Manifest.permission.CAMERA)
+    val permissionStateStorage2 = rememberPermissionState(permission = Manifest.permission.READ_EXTERNAL_STORAGE)
 
     // Launcher to handle image picker result (gallery)
-    val imagePickerLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            if (uri != null) {
-                imageUri = uri
-                // Verify if the URI is valid before proceeding
-                if (uri.scheme == "content" || uri.scheme == "file") {
-                    // Only store the image URI without uploading to Firebase
-                } else {
-                    Toast.makeText(context, "Invalid image URI", Toast.LENGTH_SHORT).show()
-                }
+    val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            imageUri = uri
+            if (uri.scheme == "content" || uri.scheme == "file") {
+                // Valid URI, do nothing for now
             } else {
-                Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Invalid image URI", Toast.LENGTH_SHORT).show()
             }
+        } else {
+            Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
         }
+    }
 
     // Launcher to handle camera capture
-    val cameraLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (success) {
-                imageUri?.let {
-                    uploadImageToFirebaseStorage(it, context) // Upload the captured image
-                } ?: Toast.makeText(context, "Image URI is null", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Failed to capture image", Toast.LENGTH_SHORT).show()
-            }
+    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) {
+            imageUri?.let {
+                uploadImageToFirebaseStorage(it, context)
+            } ?: Toast.makeText(context, "Image URI is null", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Failed to capture image", Toast.LENGTH_SHORT).show()
         }
+    }
 
-    // Function to create a temporary URI for camera
+    // Function to create a temporary URI for the camera
     fun createTempUri(context: Context): Uri {
         val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir).apply {
-            deleteOnExit() // This ensures the file is deleted when the app exits
+            deleteOnExit()
         }
         return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", tempFile)
     }
 
     // Handle permission requests when the Composable is first launched
     LaunchedEffect(Unit) {
-        // Handle permission requests when the Composable is first launched
         if (!permissionStateStorage.status.isGranted) {
             permissionStateStorage.launchPermissionRequest()
+        }
+        if (!permissionStateStorage2.status.isGranted) {
+            permissionStateStorage2.launchPermissionRequest()
         }
         if (!permissionStateCamera.status.isGranted) {
             permissionStateCamera.launchPermissionRequest()
@@ -123,108 +129,97 @@ fun <NavHostController> Profile(modifier: Modifier, navController: NavHostContro
 
         // Fetch user profile data from Firestore and update UI state
         fetchUserDataFromFirebase(context) { fetchedName, fetchedAge, fetchedDob, fetchedUri ->
-            name = fetchedName // Update user's name
-            age = fetchedAge // Update user's age
-            dob = fetchedDob // Update user's date of birth
-            imageUri = fetchedUri // Update the image URI from Firestore
+            name = fetchedName
+            age = fetchedAge
+            dob = fetchedDob
+            imageUri = fetchedUri
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Black)
-    ) {
+    val localImageUri = fetchLocalImage(context)
 
+    val profileImageUri = localImageUri ?: imageUri
 
-        // When the user clicks on the profile picture area
-        Column(
+    val drawerItems = listOf(
+        NavScreens.HomePage,
+        NavScreens.Profile,
+        NavScreens.DataBackup,
+        NavScreens.AppSetup,
+        NavScreens.Help,
+        NavScreens.Settings
+    )
+
+    DrawerScaffold(
+        title = "Profile",
+        navController = navController,
+        drawerItems = drawerItems,
+        userName = name,
+        userImageUri = profileImageUri,
+        onLogout = { authViewModel.signout() }
+    ) { innerPadding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp), // Optional padding for spacing
-            horizontalAlignment = Alignment.CenterHorizontally // Center horizontally
+                .padding(innerPadding)
+                .background(color = Color.Black)
         ) {
-            Box(
+            Column(
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(Color.Gray)
-                    .clickable {
-                        // Show an alert dialog or bottom sheet to choose between camera and gallery
-                        val options = arrayOf("Take Photo", "Choose from Gallery")
-                        AlertDialog.Builder(context)
-                            .setTitle("Select Option")
-                            .setItems(options) { _, which ->
-                                when (which) {
-                                    0 -> { // Take Photo
-                                        if (permissionStateCamera.status.isGranted) {
-                                            val tempUri =
-                                                createTempUri(context) // Generate a valid URI for the camera
-                                            imageUri =
-                                                tempUri // Store it globally so it can be accessed later
-                                            cameraLauncher.launch(tempUri) // Launch the camera
-                                        } else {
-                                            permissionStateCamera.launchPermissionRequest()
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Profile picture section with clickable options
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(Color.Gray)
+                        .clickable {
+                            // Show an alert dialog or bottom sheet to choose between camera and gallery
+                            val options = arrayOf("Take Photo", "Choose from Gallery")
+                            AlertDialog.Builder(context)
+                                .setTitle("Select Option")
+                                .setItems(options) { _, which ->
+                                    when (which) {
+                                        0 -> { // Take Photo
+                                            if (permissionStateCamera.status.isGranted) {
+                                                val tempUri = createTempUri(context)
+                                                imageUri = tempUri
+                                                cameraLauncher.launch(tempUri)
+                                            } else {
+                                                permissionStateCamera.launchPermissionRequest()
+                                            }
                                         }
-                                    }
-
-                                    1 -> { // Choose from Gallery
-                                        if (permissionStateStorage.status.isGranted) {
-                                            imagePickerLauncher.launch("image/*")
-                                        } else {
-                                            permissionStateStorage.launchPermissionRequest()
+                                        1 -> { // Choose from Gallery
+                                            if (permissionStateStorage.status.isGranted) {
+                                                imagePickerLauncher.launch("image/*")
+                                            } else {
+                                                permissionStateStorage.launchPermissionRequest()
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            .create()
-                            .show()
-                    },
+                                .create()
+                                .show()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    val localImageUri = fetchLocalImage(context)
 
-                contentAlignment = Alignment.Center
-            ) {
-                imageUri?.let {
-                    Image(
-                        painter = rememberAsyncImagePainter(it),
-                        contentDescription = "User Profile Picture",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } ?: Text(text = "Add Photo", color = Color.White)
-            }
-        }
-
-        // Fetch user profile data and update the UI
-        LaunchedEffect(Unit) {
-            val userId = user?.uid ?: return@LaunchedEffect
-            val db = FirebaseFirestore.getInstance()
-
-            db.collection("users").document(userId).get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        name = document.getString("name") ?: ""
-                        age = document.getString("age") ?: ""
-                        dob = document.getString("dob") ?: ""
-                        val profileImageUrl = document.getString("profileImageUrl")
-                        profileImageUrl?.let {
-                            imageUri = Uri.parse(it)
-                        } // Update imageUri when data is fetched
-                    } else {
-                        Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
-                    }
+                    localImageUri?.let {
+                        Image(
+                            painter = rememberImagePainter(it),  // Use the painter to load the image
+                            contentDescription = "User Profile Picture",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } ?: Text(text = "Add Photo", color = Color.White)
                 }
-                .addOnFailureListener {
-                    Toast.makeText(context, "Failed to fetch user data", Toast.LENGTH_SHORT).show()
-                }
-        }
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Profile form fields
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Form to update user details
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -254,7 +249,15 @@ fun <NavHostController> Profile(modifier: Modifier, navController: NavHostContro
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Save profile changes button
-                Button(onClick = { updateUserInfo(name, age, dob, imageUri, context) }) {
+                Button(onClick = {
+                    // Save the profile information
+                    updateUserInfo(name, age, dob, imageUri, context)
+
+                    // Save the image locally if imageUri is not null
+                    imageUri?.let {
+                        storeImageLocally(it, context)  // Call function to store the image locally
+                    }
+                }) {
                     Text("Save Profile Changes")
                 }
 
@@ -293,20 +296,21 @@ fun <NavHostController> Profile(modifier: Modifier, navController: NavHostContro
                 Button(
                     modifier = Modifier.padding(16.dp),
                     onClick = {
-                    changePassword(
-                        oldPassword,
-                        newPassword,
-                        confirmPassword,
-                        context
-                    )
-                }) {
-                    Text("Change Password",
+                        changePassword(
+                            oldPassword,
+                            newPassword,
+                            confirmPassword,
+                            context
                         )
+                    }
+                ) {
+                    Text("Change Password")
                 }
             }
         }
     }
 }
+
 fun updateUserInfo(name: String, age: String, dob: String, imageUri: Uri?, context: Context) {
     val user = FirebaseAuth.getInstance().currentUser
     val userId = user?.uid ?: return
@@ -365,7 +369,7 @@ fun changePassword(oldPassword: String, newPassword: String, confirmPassword: St
 
 fun copyUriToFile(uri: Uri, context: Context): File? {
     val contentResolver: ContentResolver = context.contentResolver
-    val file = File(context.cacheDir, "temp_image.jpg") // Temporary file in app's cache directory
+    val file = File(context.cacheDir, "temp_image") // Temporary file in app's cache directory
 
     try {
         val inputStream: InputStream = contentResolver.openInputStream(uri) ?: return null
@@ -397,7 +401,7 @@ fun uploadImageToFirebaseStorage(uri: Uri, context: Context) {
 
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
     val storageReference: StorageReference = FirebaseStorage.getInstance().reference
-    val fileReference = storageReference.child("users/$userId/profile_pic.jpg")
+    val fileReference = storageReference.child("users/$userId/profile_pic")
 
     // Upload the file to Firebase Storage
     val uploadTask = fileReference.putFile(Uri.fromFile(tempFile))
@@ -448,4 +452,28 @@ fun fetchUserDataFromFirebase(
         .addOnFailureListener {
             Toast.makeText(context, "Failed to fetch user data", Toast.LENGTH_SHORT).show()
         }
+}
+fun storeImageLocally(uri: Uri, context: Context) {
+    try {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val file = File(context.filesDir, "profile_pic.jpg") // Store the image as profile_pic.jpg in internal storage
+        val outputStream = FileOutputStream(file)
+
+        inputStream?.copyTo(outputStream)
+
+        inputStream?.close()
+        outputStream.close()
+
+        Log.d("ImageStorage", "Image stored locally at ${file.absolutePath}")
+    } catch (e: Exception) {
+        Log.e("ImageStorage", "Failed to store image locally: ${e.message}")
+    }
+}
+fun fetchLocalImage(context: Context): Uri? {
+    val file = File(context.filesDir, "profile_pic.jpg") // Path to the locally stored image file
+    return if (file.exists()) {
+        Uri.fromFile(file)  // Convert the file to Uri
+    } else {
+        null  // Return null if the file doesn't exist
+    }
 }
