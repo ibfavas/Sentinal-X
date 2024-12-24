@@ -2,23 +2,35 @@
 accompanistPermissions = "0.29.0-alpha"
 accompanistPermissionsVersion = "0.28.0"
 agp = "8.6.1"
+androidxMaterial3 = "1.0.0"
+biometric = "1.2.0-alpha05"
+biometricVersion = "1.1.0"
 cameraCamera2 = "1.4.1"
 coilCompose = "3.0.0"
 coilComposeVersion = "2.2.0"
 coilNetworkOkhttp = "3.0.0"
 comGoogleAndroidGmsPlayServicesAuth = "21.3.0"
 comGoogleAndroidGmsPlayServicesAuth2 = "21.3.0"
+comGoogleAndroidGmsPlayServicesAuth3 = "20.7.0"
 composeBomVersion = "2024.12.01"
 credentials = "1.3.0"
 faceDetection = "16.1.7"
+faceDetectionVersion = "16.0.0"
+facerecognitionAndroid = "<latest_version>"
 firebaseAnalyticsKtx = "latest_version"
+firebaseAppcheckSafetynet = "16.1.2"
 firebaseAuthKtx = "23.1.0"
 firebaseAuthVersion = "23.1.0"
 firebaseBom = "33.7.0"
+firebaseDatabase = "21.0.0"
+firebaseDatabaseKtx = "21.0.0"
 firebaseFirestoreKtx = "25.1.1"
 firebaseFirestoreVersion = "25.1.1"
 firebaseMessagingKtx = "latest_version"
+firebaseMlModelInterpreter = "22.0.4"
+firebaseMlVision = "24.1.0"
 firebaseStorageKtx = "21.0.1"
+googleApiServicesDrive = "v3-rev20230811-2.0.0"
 googleFirebaseAuth = "24.0.0"
 googleFirebaseAuthVersion = "23.1.0"
 googleid = "1.1.1"
@@ -26,6 +38,7 @@ googlePlayServicesAuth = "21.3.0"
 googlePlayServicesAuthVersion = "21.3.0"
 googleServices = "4.4.2"
 gradle = "7.4.2"
+gradleVersion = "8.6.1"
 hiltAndroid = "2.44"
 hiltAndroidGradlePlugin = "2.44"
 hiltCompiler = "2.44"
@@ -43,11 +56,19 @@ composeBom = "2024.12.01"
 material = "1.7.6"
 material3 = "1.3.1"
 material3Version = "1.3.1"
+megaclient = "4.0.0"
 navigationCompose = "2.8.5"
 onetapcompose = "1.0.14"
 permission = "1.0.0"
+playServicesAds = "23.6.0"
+playServicesAdsLite = "23.6.0"
 playServicesAuth = "21.3.0"
 playServicesAuthVersion = "21.3.0"
+playServicesMeasurementApi = "latest_version"
+playServicesMlkitFaceDetection = "17.1.0"
+tensorflowLite = "2.10.0"
+tensorflowLiteGpu = "2.10.0"
+tensorflowLiteSupport = "2.10.0"
 ui = "1.7.6"
 foundationLayoutAndroid = "1.7.6"
 storage = "1.5.0"
@@ -59,6 +80,7 @@ firebaseFirestore = "25.1.1"
 runtimeLivedata = "1.7.6"
 firebaseCrashlyticsBuildtools = "3.0.2"
 firebaseMessaging = "24.1.0"
+biometricKtx = "1.1.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -70,37 +92,36 @@ androidx-compose-bom-v20240100 = { module = "androidx.compose:compose-bom", vers
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
-androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
-androidx-hilt-navigation-fragment = { module = "androidx.hilt:hilt-navigation-fragment", version.ref = "hiltNavigationFragment" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-material3-v120 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-androidx-permission = { module = "androidx.compose.permission:permission", version.ref = "permission" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 face-detection = { module = "com.google.mlkit:face-detection", version.ref = "faceDetection" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalyticsKtx" }
+firebase-appcheck-safetynet = { module = "com.google.firebase:firebase-appcheck-safetynet", version.ref = "firebaseAppcheckSafetynet" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-auth-v2101 = { module = "com.google.firebase:firebase-auth", version.ref = "googleFirebaseAuthVersion" }
-firebase-auth-v2211 = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuthVersion" }
-firebase-auth-v2400 = { module = "com.google.firebase:firebase-auth", version.ref = "googleFirebaseAuth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
+firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
-firebase-firestore-v2400 = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestoreVersion" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+firebase-ml-model-interpreter = { module = "com.google.firebase:firebase-ml-model-interpreter", version.ref = "firebaseMlModelInterpreter" }
+firebase-ml-vision = { module = "com.google.firebase:firebase-ml-vision", version.ref = "firebaseMlVision" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 google-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -115,15 +136,12 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
-onetapcompose = { module = "com.github.stevdza-san:OneTapCompose", version.ref = "onetapcompose" }
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
+play-services-ads-lite = { module = "com.google.android.gms:play-services-ads-lite", version.ref = "playServicesAdsLite" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-auth-v1900 = { module = "com.google.android.gms:play-services-auth", version.ref = "comGoogleAndroidGmsPlayServicesAuth2" }
-play-services-auth-v2000 = { module = "com.google.android.gms:play-services-auth", version.ref = "comGoogleAndroidGmsPlayServicesAuth" }
-play-services-auth-v2040 = { module = "com.google.android.gms:play-services-auth", version.ref = "googlePlayServicesAuthVersion" }
-play-services-auth-v2060 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
-play-services-auth-v2120 = { module = "com.google.android.gms:play-services-auth", version.ref = "googlePlayServicesAuth" }
-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+play-services-measurement-api = { module = "com.google.android.gms:play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
+play-services-mlkit-face-detection = { module = "com.google.android.gms:play-services-mlkit-face-detection", version.ref = "playServicesMlkitFaceDetection" }
 androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroid" }
 androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
 androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
@@ -134,6 +152,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

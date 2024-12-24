@@ -1,5 +1,7 @@
 package com.example.antitheft.pages
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -35,6 +37,7 @@ fun DataBackup(
     val context = LocalContext.current
     var userName by remember { mutableStateOf("Loading...") }
     var userImageUri by remember { mutableStateOf<Uri?>(null) }
+
 
     // Fetch user details from Firebase
     LaunchedEffect(Unit) {
@@ -95,36 +98,53 @@ fun DataBackup(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
+            // Google Drive Option
             BackupOption(
                 title = "Google Drive",
                 iconRes = R.drawable.ic_gdrive,
-                onClick = { /* Add Google Drive backup logic */ }
+                onClick = {
+                    openGoogleDrive(context)  // Open Google Drive app
+                }
             )
+
+            // OneDrive Option
             BackupOption(
                 title = "OneDrive",
                 iconRes = R.drawable.ic_onedrive,
-                onClick = { /* Add OneDrive backup logic */ }
+                onClick = {
+                    openOneDrive(context)  // Open OneDrive app
+                }
             )
+
+            // Dropbox Option
+            BackupOption(
+                title = "Dropbox",
+                iconRes = R.drawable.ic_dropbox,
+                onClick = {
+                    openDropbox(context)  // Open Dropbox app
+                }
+            )
+
+            // Mega Option
             BackupOption(
                 title = "Mega",
                 iconRes = R.drawable.ic_mega,
-                onClick = { /* Add Mega backup logic */ }
-            )
-            BackupOption(
-                title = "Local Backup",
-                iconRes = R.drawable.ic_local_backup,
-                onClick = { /* Add Local Backup logic */ }
+                onClick = {
+                    openMega(context)  // Open Mega app
+                }
             )
             BackupOption(
                 title = "iCloud",
                 iconRes = R.drawable.ic_icloud,
-                onClick = { /* Add iCloud backup logic */ }
+                onClick = { /* Local backup logic or no action */ }
             )
             BackupOption(
-                title = "Dropbox",
-                iconRes = R.drawable.ic_dropbox,
-                onClick = { /* Add Dropbox backup logic */ }
+                title = "Local Backup",
+                iconRes = R.drawable.ic_local_backup,
+                onClick = {  } // Trigger backup
             )
+
         }
     }
 }
@@ -162,3 +182,42 @@ fun BackupOption(title: String, iconRes: Int, onClick: () -> Unit) {
         }
     }
 }
+
+// Function to open Google Drive upload page
+fun openGoogleDrive(context: Context) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse("https://drive.google.com/drive/u/0/folders") // Directly open the Google Drive folder
+    }
+    context.startActivity(intent) // Open Google Drive upload page in browser or app
+}
+
+// Function to open OneDrive upload page
+fun openOneDrive(context: Context) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse("https://onedrive.live.com/") // Direct OneDrive web page
+    }
+    context.startActivity(intent) // Open OneDrive upload page in browser or app
+}
+
+// Function to open Dropbox upload page
+fun openDropbox(context: Context) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse("https://www.dropbox.com/") // Direct Dropbox page
+    }
+    context.startActivity(intent) // Open Dropbox upload page in browser or app
+}
+
+// Function to open Mega app or Mega webpage if app is not installed
+fun openMega(context: Context) {
+    val intent = context.packageManager.getLaunchIntentForPackage("com.megacorp.megasync") // Package name for Mega app
+    if (intent != null) {
+        context.startActivity(intent) // Open the Mega app
+    } else {
+        // If Mega app is not installed, open the Mega webpage
+        val fallbackIntent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("https://mega.nz/") // Mega web page
+        }
+        context.startActivity(fallbackIntent) // Open Mega web page in browser
+    }
+}
+

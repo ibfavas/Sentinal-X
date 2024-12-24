@@ -3,13 +3,11 @@ package com.example.antitheft.pages
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,9 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.antitheft.AuthState
 import com.example.antitheft.AuthViewModel
+import com.example.antitheft.R
 import com.example.antitheft.ui.NavScreens
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -111,18 +114,93 @@ fun AppSetup(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .align(Alignment.Center),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp) // Reduce vertical spacing
             ) {
-                Text(
-                    text = "Welcome to the App Setup Page",
-                    color = Color.White,
-                    style = MaterialTheme.typography.body1
+
+                val fields = listOf(
+                    "Face Registration" to R.drawable.ic_face_registration,
+                    "Emergency Contacts" to R.drawable.ic_emergency_contacts,
+                    "Emergency Email" to R.drawable.ic_email,
+                    "Registered Faces" to R.drawable.userpic,
+                    "Pin" to R.drawable.ic_pin,
+                    "Pattern" to R.drawable.ic_pattern,
+                    "Gesture Control" to R.drawable.ic_gesture,
+                    "Fingerprint" to R.drawable.ic_fingerprint
                 )
 
-                // You can add other setup UI elements here (e.g., settings options, form inputs, etc.)
+                // Use Grid Layout Logic
+                val rows = fields.chunked(2) // Group fields into rows of 2
+                rows.forEach { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp) // Reduce horizontal spacing
+                    ) {
+                        row.forEach { (field, icon) ->
+                            FieldCard(
+                                title = field,
+                                iconRes = icon,
+                                modifier = Modifier
+                                    .weight(1f) // Ensure items are evenly spaced
+                                    .aspectRatio(1f), // Square cards
+                                onClick = {
+
+                                    when (field) {
+                                        "Face Registration" -> navController.navigate("face_registration")
+                                        "Registered Faces" -> navController.navigate("registered_faces")
+                                        "Emergency Contacts" -> navController.navigate("emergency_contacts")
+                                        "Emergency Email" -> navController.navigate("emergency_email")
+                                        "Pin" -> navController.navigate("pin_lock")
+                                        "Pattern" -> navController.navigate("pattern_lock")
+                                        "Gesture Control" -> navController.navigate("gesture_control")
+                                        "Fingerprint" -> navController.navigate("fingerprint_lock")
+                                        else -> navController.navigate("setup/$field")
+                                    }
+                                }
+                            )
+                        }
+
+                        // Add a spacer if the row has less than 2 items
+                        if (row.size < 2) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun FieldCard(
+    title: String,
+    iconRes: Int,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .background(Color.DarkGray, shape = RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = title,
+                modifier = Modifier.size(40.dp), // Adjusted icon size
+            )
+            Spacer(modifier = Modifier.height(4.dp)) // Reduce space between icon and text
+            Text(
+                text = title,
+                style = MaterialTheme.typography.body1,
+                color = Color.White,
+                fontSize = 12.sp, // Smaller font size for better fit
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

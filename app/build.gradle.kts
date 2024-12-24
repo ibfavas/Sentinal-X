@@ -111,6 +111,9 @@ dependencies {
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.coil.kt.coil.compose)
+    implementation(libs.face.detection)
+    implementation(libs.play.services.mlkit.face.detection)
+
 
 
 }
