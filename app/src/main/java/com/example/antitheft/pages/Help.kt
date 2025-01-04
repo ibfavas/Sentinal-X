@@ -2,12 +2,17 @@ package com.example.antitheft.pages
 
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,10 +22,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.antitheft.AuthState
 import com.example.antitheft.AuthViewModel
@@ -93,7 +98,22 @@ fun Help(
         NavScreens.Settings
     )
 
-    // Using DrawerScaffold for AppSetup page
+    // Questions and answers for the Help page
+    val faqItems = listOf(
+        "What are the permissions required for the app to work properly?" to "You have to give the app access to Network, Camera, Location etc. which are asked by the app during initial startup.",
+        "How do I back up my data?" to "Navigate to the Data Backup section. There you will find several cloud backup options. Follow the steps to upload your data to the cloud.",
+        "How does the anti-theft feature work?" to "The app monitors unauthorized access and triggers alerts if suspicious activity is detected. If it detects some unauthorized user trying to access the device, it will capture the intruders selfie and will send it to emergency contacts along with the location.",
+        "How do I change my profile picture?" to "Go to your Profile page, and click on your current profile picture to update it.",
+        "Is there support for pin and pattern locks?" to "Yes there is! Go to the App Setup section from the navigation drawer and you will find option to set up pin and pattern lock along with face recognition support.",
+        "What is Stealth Mode?" to "It is a feature which enables the user to disguise the app as another app. It helps to enhance the security of the application.",
+        "Can I use the app on multiple devices?" to "Yes, but you need to sign in with the same account on all devices.",
+        "Why am I not receiving alerts?" to "Ensure notifications are enabled, and the app has permission to access background activities.",
+        "What is a fake shutdown?" to "The fake shutdown feature prevents unauthorized users from shutting down the device. Instead, it displays a shutdown animation while keeping the device active.",
+        "How do I delete my account?" to "Navigate to the Settings page, click on 'Account Settings,' and choose the 'Delete Account' option. Note that this action is irreversible.",
+        "What should I do if I encounter a bug?" to "Contact support or report the issue via the 'Feedback' option in the Settings page."
+    )
+
+    // Using DrawerScaffold for Help page
     DrawerScaffold(
         title = "Help",
         navController = navController,
@@ -108,21 +128,46 @@ fun Help(
                 .padding(innerPadding)
                 .background(Color.Black)
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .align(Alignment.Center),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = "Welcome to the Help Page",
-                    color = Color.White,
-                    style = MaterialTheme.typography.body1
-                )
-
-                // You can add other setup UI elements here (e.g., settings options, form inputs, etc.)
+                items(faqItems) { (question, answer) ->
+                    FAQItem(question = question, answer = answer)
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun FAQItem(question: String, answer: String) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.DarkGray, shape = RoundedCornerShape(12.dp)) // Rounded corners
+            .clickable { isExpanded = !isExpanded }
+            .animateContentSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = question,
+            color = Color.White,
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        if (isExpanded) {
+            Text(
+                text = answer,
+                color = Color.LightGray,
+                style = MaterialTheme.typography.body2, // Increased text size
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+            )
         }
     }
 }
