@@ -114,6 +114,4 @@ dependencies {
     implementation(libs.face.detection)
     implementation(libs.play.services.mlkit.face.detection)
 
-
-
 }

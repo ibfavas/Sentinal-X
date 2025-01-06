@@ -26,7 +26,7 @@ class ProfileActivity : AppCompatActivity() {
                     imageView.setImageURI(it)
                 } ?: run {
                     // If no image from Firebase, set a placeholder
-                    imageView.setImageResource(R.drawable.placeholder_pic)
+                    imageView.setImageResource(R.drawable.userpic)
                 }
             }
         }

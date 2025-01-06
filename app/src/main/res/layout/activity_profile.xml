@@ -11,7 +11,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:src="@drawable/placeholder_pic"
+        android:src="@drawable/userpic"
     android:scaleType="centerCrop"
     android:contentDescription="@string/profile_image" />
 

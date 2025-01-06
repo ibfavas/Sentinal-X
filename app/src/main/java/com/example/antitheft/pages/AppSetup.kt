@@ -96,6 +96,19 @@ fun AppSetup(
         NavScreens.Settings
     )
 
+    // Define colors for each field
+    val fieldColors = mapOf(
+        "Face Registration" to Color(0xFFBBDEFB), // Light Blue
+        "Emergency Contacts" to Color(0xFFFFCDD2), // Light Red
+        "Emergency Email" to Color(0xFFC8E6C9), // Light Green
+        "Registered Faces" to Color(0xFFFFF9C4), // Light Yellow
+        "Pin" to Color(0xFFE1BEE7), // Light Purple
+        "Pattern" to Color(0xFFB2DFDB), // Light Teal
+        "Gesture Control" to Color(0xFFFFCCBC), // Light Orange
+        "Fingerprint" to Color(0xFFF8BBD0)  // Light Pink
+    )
+
+
     // Using DrawerScaffold for AppSetup page
     DrawerScaffold(
         title = "App Setup",
@@ -140,11 +153,11 @@ fun AppSetup(
                             FieldCard(
                                 title = field,
                                 iconRes = icon,
+                                backgroundColor = fieldColors[field] ?: Color.Gray, // Set color from map or default to gray
                                 modifier = Modifier
                                     .weight(1f) // Ensure items are evenly spaced
                                     .aspectRatio(1f), // Square cards
                                 onClick = {
-
                                     when (field) {
                                         "Face Registration" -> navController.navigate("face_registration")
                                         "Registered Faces" -> navController.navigate("registered_faces")
@@ -175,12 +188,13 @@ fun AppSetup(
 fun FieldCard(
     title: String,
     iconRes: Int,
+    backgroundColor: Color,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
-            .background(Color.DarkGray, shape = RoundedCornerShape(8.dp))
+            .background(backgroundColor, shape = RoundedCornerShape(8.dp))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
@@ -192,12 +206,14 @@ fun FieldCard(
                 painter = painterResource(id = iconRes),
                 contentDescription = title,
                 modifier = Modifier.size(40.dp), // Adjusted icon size
+                tint = Color.Black // Set icon color to black
             )
+
             Spacer(modifier = Modifier.height(4.dp)) // Reduce space between icon and text
             Text(
                 text = title,
                 style = MaterialTheme.typography.body1,
-                color = Color.White,
+                color = Color.Black,
                 fontSize = 12.sp, // Smaller font size for better fit
                 textAlign = TextAlign.Center
             )

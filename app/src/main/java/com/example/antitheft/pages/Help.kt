@@ -85,7 +85,6 @@ fun Help(
     }
 
     val localImageUri = fetchLocalImage(context)
-
     val profileImageUri = localImageUri ?: userImageUri
 
     // Drawer items
@@ -102,9 +101,9 @@ fun Help(
     val faqItems = listOf(
         "What are the permissions required for the app to work properly?" to "You have to give the app access to Network, Camera, Location etc. which are asked by the app during initial startup.",
         "How do I back up my data?" to "Navigate to the Data Backup section. There you will find several cloud backup options. Follow the steps to upload your data to the cloud.",
-        "How does the anti-theft feature work?" to "The app monitors unauthorized access and triggers alerts if suspicious activity is detected. If it detects some unauthorized user trying to access the device, it will capture the intruders selfie and will send it to emergency contacts along with the location.",
+        "How does the anti-theft feature work?" to "The app monitors unauthorized access and triggers alerts if suspicious activity is detected. If it detects some unauthorized user trying to access the device, it will capture the intruder's selfie and will send it to emergency contacts along with the location.",
         "How do I change my profile picture?" to "Go to your Profile page, and click on your current profile picture to update it.",
-        "Is there support for pin and pattern locks?" to "Yes there is! Go to the App Setup section from the navigation drawer and you will find option to set up pin and pattern lock along with face recognition support.",
+        "Is there support for pin and pattern locks?" to "Yes there is! Go to the App Setup section from the navigation drawer and you will find options to set up pin and pattern lock along with face recognition support.",
         "What is Stealth Mode?" to "It is a feature which enables the user to disguise the app as another app. It helps to enhance the security of the application.",
         "Can I use the app on multiple devices?" to "Yes, but you need to sign in with the same account on all devices.",
         "Why am I not receiving alerts?" to "Ensure notifications are enabled, and the app has permission to access background activities.",
@@ -113,7 +112,12 @@ fun Help(
         "What should I do if I encounter a bug?" to "Contact support or report the issue via the 'Feedback' option in the Settings page."
     )
 
-    // Using DrawerScaffold for Help page
+    // Color palette for questions
+    val colors = listOf(
+        Color(0xFF06A4EC), // Blue
+        Color(0xFF2196F3),
+    )
+
     DrawerScaffold(
         title = "Help",
         navController = navController,
@@ -126,7 +130,7 @@ fun Help(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(brush = androidx.compose.ui.graphics.Brush.verticalGradient(colors = listOf(Color.Black, Color.DarkGray)))
         ) {
             LazyColumn(
                 modifier = Modifier
@@ -134,8 +138,13 @@ fun Help(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(faqItems) { (question, answer) ->
-                    FAQItem(question = question, answer = answer)
+                items(faqItems.withIndex().toList()) { (index, faq) ->
+                    val questionColor = colors[index % colors.size]
+                    FAQItem(
+                        question = faq.first,
+                        answer = faq.second,
+                        backgroundColor = questionColor
+                    )
                 }
             }
         }
@@ -143,13 +152,13 @@ fun Help(
 }
 
 @Composable
-fun FAQItem(question: String, answer: String) {
+fun FAQItem(question: String, answer: String, backgroundColor: Color) {
     var isExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.DarkGray, shape = RoundedCornerShape(12.dp)) // Rounded corners
+            .background(color = backgroundColor, shape = RoundedCornerShape(12.dp)) // Rounded corners
             .clickable { isExpanded = !isExpanded }
             .animateContentSize()
             .padding(16.dp),
@@ -164,10 +173,11 @@ fun FAQItem(question: String, answer: String) {
         if (isExpanded) {
             Text(
                 text = answer,
-                color = Color.LightGray,
-                style = MaterialTheme.typography.body2, // Increased text size
+                color = Color.White,
+                style = MaterialTheme.typography.body2,
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             )
         }
     }
 }
+
