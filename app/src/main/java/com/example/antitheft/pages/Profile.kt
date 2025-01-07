@@ -14,10 +14,26 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cake
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,15 +45,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.example.antitheft.AuthViewModel
+import com.example.antitheft.ui.NavScreens
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -50,12 +70,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
-import com.example.antitheft.ui.NavScreens
-
 
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -154,7 +168,12 @@ fun Profile(
         drawerItems = drawerItems,
         userName = name,
         userImageUri = profileImageUri,
-        onLogout = { authViewModel.signout() }
+        onLogout = {
+            authViewModel.signout()
+            navController.navigate("login"){
+                popUpTo(0)
+            }
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -216,39 +235,69 @@ fun Profile(
                     } ?: Text(text = "Add Photo", color = Color.White)
                 }
 
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // Updated TextFields with proper reference to outlinedTextFieldColors
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = name,
+                                onValueChange = { name = it },
+                                label = { Text("Name") },
+                                placeholder = { Text("Enter your name") },
+                                leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Name Icon") },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                            OutlinedTextField(
+                                value = age,
+                                onValueChange = { age = it },
+                                label = { Text("Age") },
+                                placeholder = { Text("Enter your age") },
+                                leadingIcon = { Icon(Icons.Default.Cake, contentDescription = "Age Icon") },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                            OutlinedTextField(
+                                value = dob,
+                                onValueChange = { dob = it },
+                                label = { Text("Date of Birth") },
+                                placeholder = { Text("DD/MM/YYYY") },
+                                leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = "DOB Icon") },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                            OutlinedTextField(
+                                value = user?.email ?: "Unknown",
+                                onValueChange = {},
+                                label = { Text("Email") },
+                                placeholder = { Text("Email is read-only") },
+                                leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
+                                modifier = Modifier.fillMaxWidth(),
+                                readOnly = true,
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                        }
+
+
+
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Form to update user details
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Name") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                OutlinedTextField(
-                    value = age,
-                    onValueChange = { age = it },
-                    label = { Text("Age") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                OutlinedTextField(
-                    value = dob,
-                    onValueChange = { dob = it },
-                    label = { Text("Date of Birth") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                OutlinedTextField(
-                    value = user?.email ?: "Unknown",
-                    onValueChange = {},
-                    label = { Text("Email") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 // Save profile changes button
-                Button(onClick = {
+                Button(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(0.5f)
+                        .height(50.dp)
+                        .shadow(6.dp, RoundedCornerShape(12.dp))
+                        .background(Color(0xFF6200EE), RoundedCornerShape(12.dp)),
+                    shape = RoundedCornerShape(12.dp),
+                    onClick = {
                     // Save the profile information
                     updateUserInfo(name, age, dob, imageUri, context)
 
@@ -257,43 +306,60 @@ fun Profile(
                         storeImageLocally(it, context)  // Call function to store the image locally
                     }
                 }) {
-                    Text("Save Profile Changes")
+                    Text(
+                        text = "Save Profile",
+                        color = Color.Black,
+                        fontSize = 14.sp,
+                        letterSpacing = 1.25.sp
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(7.dp))
 
-                // Password Change Section
-                Text(text = "Change Password", fontWeight = FontWeight.Bold)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(13.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    OutlinedTextField(
+                        value = oldPassword,
+                        onValueChange = { oldPassword = it },
+                        label = { Text("Old Password") },
+                        placeholder = { Text("Enter your old password") },
+                        leadingIcon ={ Icon(Icons.Default.Numbers, contentDescription = "OldPass") },
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        shape = RoundedCornerShape(12.dp),
+                    )
 
-                OutlinedTextField(
-                    value = oldPassword,
-                    onValueChange = { oldPassword = it },
-                    label = { Text("Old Password") },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-                )
+                    OutlinedTextField(
+                        value = newPassword,
+                        onValueChange = { newPassword = it },
+                        label = { Text("New Password") },
+                        placeholder = { Text("Enter your new password") },
+                        leadingIcon ={ Icon(Icons.Default.Numbers, contentDescription = "NewPass") },
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = PasswordVisualTransformation(),
+                        shape = RoundedCornerShape(12.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    )
 
-                OutlinedTextField(
-                    value = newPassword,
-                    onValueChange = { newPassword = it },
-                    label = { Text("New Password") },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-                )
-
-                OutlinedTextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = { Text("Confirm New Password") },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-                )
+                    OutlinedTextField(
+                        value = confirmPassword,
+                        onValueChange = { confirmPassword = it },
+                        label = { Text("Confirm New Password") },
+                        placeholder = { Text("Enter your new password again") },
+                        leadingIcon ={ Icon(Icons.Default.Numbers, contentDescription = "ConfirmPass") },
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = PasswordVisualTransformation(),
+                        shape = RoundedCornerShape(12.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    )
+                }
 
                 Button(
-                    modifier = Modifier.padding(16.dp),
                     onClick = {
                         changePassword(
                             oldPassword,
@@ -301,10 +367,23 @@ fun Profile(
                             confirmPassword,
                             context
                         )
-                    }
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(0.5f)
+                        .height(50.dp)
+                        .shadow(6.dp, RoundedCornerShape(12.dp))
+                        .background(Color(0xFF6200EE), RoundedCornerShape(12.dp)),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Change Password")
+                    Text(
+                        text = "Change Password",
+                        color = Color.Black,
+                        fontSize = 14.sp,
+                        letterSpacing = 1.25.sp
+                    )
                 }
+
             }
         }
     }

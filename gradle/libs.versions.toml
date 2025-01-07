@@ -1,8 +1,12 @@
 [versions]
 accompanistPermissions = "0.29.0-alpha"
 accompanistPermissionsVersion = "0.28.0"
+activityComposeVersion = "1.3.1"
 agp = "8.6.1"
+androidxBiometric = "1.2.0-alpha05"
+androidxBiometricKtx = "1.4.0-alpha02"
 androidxMaterial3 = "1.0.0"
+androidxMaterial3Version = "1.0.0"
 biometric = "1.2.0-alpha05"
 biometricVersion = "1.1.0"
 cameraCamera2 = "1.4.1"
@@ -13,6 +17,7 @@ comGoogleAndroidGmsPlayServicesAuth = "21.3.0"
 comGoogleAndroidGmsPlayServicesAuth2 = "21.3.0"
 comGoogleAndroidGmsPlayServicesAuth3 = "20.7.0"
 composeBomVersion = "2024.12.01"
+coreKtxVersion = "1.7.0"
 credentials = "1.3.0"
 faceDetection = "16.1.7"
 faceDetectionVersion = "16.0.0"
@@ -83,20 +88,26 @@ runtimeLivedata = "1.7.6"
 firebaseCrashlyticsBuildtools = "3.0.2"
 firebaseMessaging = "24.1.0"
 biometricKtx = "1.1.0"
+biometricKtxVersion = "1.1.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 accompanist-permissions-v0280 = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
+androidx-activity-compose-v131 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "androidxBiometric" }
+androidx-biometric-ktx-v140alpha02 = { module = "androidx.biometric:biometric-ktx", version.ref = "androidxBiometricKtx" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCamera2" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCamera2" }
 androidx-compose-bom-v20240100 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-ktx-v170 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+androidx-material3-v100 = { module = "androidx.compose.material3:material3", version.ref = "androidxMaterial3Version" }
 androidx-material3-v120 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
@@ -156,6 +167,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+androidx-biometric-ktx = { group = "androidx.biometric", name = "biometric-ktx", version.ref = "biometricKtxVersion" }
 
 
 [plugins]
