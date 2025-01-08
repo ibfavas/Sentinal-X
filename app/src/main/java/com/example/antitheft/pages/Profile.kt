@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,10 +46,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -57,6 +60,7 @@ import androidx.core.content.FileProvider
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.antitheft.AuthViewModel
+import com.example.antitheft.R
 import com.example.antitheft.ui.NavScreens
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -179,7 +183,10 @@ fun Profile(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(color = Color.Black)
+                .paint(
+                    painterResource(id = R.drawable.profile_back),
+                    contentScale = ContentScale.FillBounds
+                )
         ) {
             Column(
                 modifier = Modifier
@@ -193,6 +200,7 @@ fun Profile(
                         .size(120.dp)
                         .clip(CircleShape)
                         .background(Color.Gray)
+                        .border(2.dp, Color.Blue, CircleShape)
                         .clickable {
                             // Show an alert dialog or bottom sheet to choose between camera and gallery
                             val options = arrayOf("Take Photo", "Choose from Gallery")
