@@ -118,5 +118,6 @@ dependencies {
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.face.detection)
     implementation(libs.play.services.mlkit.face.detection)
+    implementation(libs.gson)
 
 }

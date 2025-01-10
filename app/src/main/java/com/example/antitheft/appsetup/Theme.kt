@@ -11,7 +11,7 @@ import androidx.navigation.NavHostController
 
 @Composable
 
-fun GestureControl(navController: NavHostController) {
+fun Theme(navController: NavHostController) {
     val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize()

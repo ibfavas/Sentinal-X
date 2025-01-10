@@ -20,12 +20,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.PrivacyTip
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
@@ -229,11 +229,11 @@ fun Settings(
 
                 // Save Settings field
                 SettingsListItem(
-                    icon = Icons.Default.Save,
-                    title = "Save Settings",
-                    description = "Save your preferences",
+                    icon = Icons.Default.DeleteForever,
+                    title = "Delete your Account",
+                    description = "Delete your account permanently.",
                     onClick = { /* Save settings logic */ },
-                    iconColor = Color(0xFFEA9E9E)
+                    iconColor = Color(0xFFDE8282)
                 )
 
                 Box(
@@ -284,7 +284,7 @@ fun SettingsToggleItem(
                 Text(text = title, fontSize = 18.sp) // Increased font size
                 Text(
                     text = description,
-                    style = androidx.compose.material.MaterialTheme.typography.caption.copy(fontSize = 14.sp)
+                    style = MaterialTheme.typography.caption.copy(fontSize = 14.sp)
                 )
             }
         }
@@ -317,7 +317,7 @@ fun SettingsListItem(
             Text(text = title, fontSize = 18.sp) // Increased font size
             Text(
                 text = description,
-                style = androidx.compose.material.MaterialTheme.typography.caption.copy(fontSize = 14.sp)
+                style = MaterialTheme.typography.caption.copy(fontSize = 14.sp)
             )
         }
     }

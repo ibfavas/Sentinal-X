@@ -34,11 +34,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.TagFaces
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -269,9 +269,9 @@ fun HomePage(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         val items = listOf(
-                            Pair(Icons.Default.Face, "face_registration"),
-                            Pair(Icons.Default.Lock, "pin_lock"),
-                            Pair(Icons.Default.Help, "help"),
+                            Pair(Icons.Default.TagFaces, "face_registration"),
+                            Pair(Icons.Default.Fingerprint, "fingerprint_lock"),
+                            Pair(Icons.Default.Pin, "pin_lock"),
                             Pair(Icons.Default.Settings, "settings")
                         )
 

@@ -9,18 +9,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.antitheft.appsetup.EmergencyContacts
 import com.example.antitheft.appsetup.EmergencyEmail
-import com.example.antitheft.pages.AppSetup
-import com.example.antitheft.pages.DataBackup
 import com.example.antitheft.appsetup.FaceRegistration
 import com.example.antitheft.appsetup.FingerprintLock
-import com.example.antitheft.appsetup.GestureControl
 import com.example.antitheft.appsetup.PatternLock
 import com.example.antitheft.appsetup.PinLock
+import com.example.antitheft.appsetup.RegisteredFaces
+import com.example.antitheft.appsetup.Theme
+import com.example.antitheft.pages.AppSetup
+import com.example.antitheft.pages.DataBackup
 import com.example.antitheft.pages.Help
 import com.example.antitheft.pages.HomePage
 import com.example.antitheft.pages.LoginPage
 import com.example.antitheft.pages.Profile
-import com.example.antitheft.appsetup.RegisteredFaces
 import com.example.antitheft.pages.Settings
 import com.example.antitheft.pages.SignupPage
 import com.example.antitheft.pages.SplashScreen
@@ -79,8 +79,8 @@ fun AppNavigation(
         composable("pattern_lock") {
             PatternLock(navController = navController)
         }
-        composable("gesture_control") {
-            GestureControl(navController = navController)
+        composable("theme") {
+            Theme(navController = navController)
         }
         composable("fingerprint_lock") {
             FingerprintLock(navController = navController)

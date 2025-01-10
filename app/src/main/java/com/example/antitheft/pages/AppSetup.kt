@@ -4,10 +4,21 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -104,8 +115,8 @@ fun AppSetup(
         "Registered Faces" to Color(0xFFFFF9C4), // Light Yellow
         "Pin" to Color(0xFFE1BEE7), // Light Purple
         "Pattern" to Color(0xFFB2DFDB), // Light Teal
-        "Gesture Control" to Color(0xFFFFCCBC), // Light Orange
-        "Fingerprint" to Color(0xFFF8BBD0)  // Light Pink
+        "Fingerprint" to Color(0xFFFFCCBC), // Light Orange
+        "Theme" to Color(0xFFF8BBD0), // Light Pink
     )
 
 
@@ -138,8 +149,8 @@ fun AppSetup(
                     "Registered Faces" to R.drawable.userpic,
                     "Pin" to R.drawable.ic_pin,
                     "Pattern" to R.drawable.ic_pattern,
-                    "Gesture Control" to R.drawable.ic_gesture,
-                    "Fingerprint" to R.drawable.ic_fingerprint
+                    "Fingerprint" to R.drawable.ic_fingerprint,
+                    "Theme" to R.drawable.ic_gesture,
                 )
 
                 // Use Grid Layout Logic
@@ -165,8 +176,8 @@ fun AppSetup(
                                         "Emergency Email" -> navController.navigate("emergency_email")
                                         "Pin" -> navController.navigate("pin_lock")
                                         "Pattern" -> navController.navigate("pattern_lock")
-                                        "Gesture Control" -> navController.navigate("gesture_control")
                                         "Fingerprint" -> navController.navigate("fingerprint_lock")
+                                        "Theme" -> navController.navigate("theme")
                                         else -> navController.navigate("setup/$field")
                                     }
                                 }
