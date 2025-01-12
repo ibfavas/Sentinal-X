@@ -35,10 +35,12 @@ import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,6 +63,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.antitheft.AuthViewModel
 import com.example.antitheft.R
+import com.example.antitheft.ThemeViewModel
 import com.example.antitheft.ui.NavScreens
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -82,7 +85,8 @@ import java.io.OutputStream
 fun Profile(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    viewModel: ThemeViewModel
 ) {
     val context = LocalContext.current
     val user = FirebaseAuth.getInstance().currentUser
@@ -93,6 +97,10 @@ fun Profile(
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
+    // Change background pic according to theme
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+    val backgroundResource = if (isDarkTheme) R.drawable.profile_back else R.drawable.whiteback
 
     // Request permissions for reading external storage and camera
     val permissionStateStorage = rememberPermissionState(permission = Manifest.permission.READ_MEDIA_IMAGES)
@@ -184,7 +192,7 @@ fun Profile(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .paint(
-                    painterResource(id = R.drawable.profile_back),
+                    painterResource(backgroundResource),
                     contentScale = ContentScale.FillBounds
                 )
         ) {
@@ -240,7 +248,7 @@ fun Profile(
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
-                    } ?: Text(text = "Add Photo", color = Color.White)
+                    } ?: Text(text = "Add Photo", color = MaterialTheme.colorScheme.onBackground)
                 }
 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -303,7 +311,7 @@ fun Profile(
                         .fillMaxWidth(0.5f)
                         .height(50.dp)
                         .shadow(6.dp, RoundedCornerShape(12.dp))
-                        .background(Color(0xFF6200EE), RoundedCornerShape(12.dp)),
+                        .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp),
                     onClick = {
                     // Save the profile information
@@ -316,7 +324,7 @@ fun Profile(
                 }) {
                     Text(
                         text = "Save Profile",
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 14.sp,
                         letterSpacing = 1.25.sp
                     )
@@ -381,12 +389,12 @@ fun Profile(
                         .fillMaxWidth(0.5f)
                         .height(50.dp)
                         .shadow(6.dp, RoundedCornerShape(12.dp))
-                        .background(Color(0xFF6200EE), RoundedCornerShape(12.dp)),
+                        .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
                         text = "Change Password",
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 14.sp,
                         letterSpacing = 1.25.sp
                     )

@@ -1,5 +1,9 @@
 package com.example.antitheft.appsetup
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -8,22 +12,36 @@ import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.MaterialTheme
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,8 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import java.io.File
 import java.io.FileWriter
-import android.app.Activity
-import androidx.compose.foundation.shape.RoundedCornerShape
 
 data class Contact(val name: String, val phoneNumber: String)
 
@@ -60,7 +76,7 @@ fun EmergencyContacts(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -78,13 +94,13 @@ fun EmergencyContacts(navController: NavHostController) {
                 Icon(
                     imageVector = Icons.Filled.Phone,
                     contentDescription = "Emergency Contacts Icon",
-                    tint = Color.White,
+                    tint = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Emergency Contacts",
-                    color = Color.White,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.h5
                 )
             }
@@ -113,9 +129,9 @@ fun EmergencyContacts(navController: NavHostController) {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
-                .size(60.dp)
+                .size(80.dp)
                 .offset(x=((-20).dp),y=((-20).dp))
-                .background(color = Color.Gray, shape = CircleShape)
+                .background(color = androidx.compose.material3.MaterialTheme.colorScheme.tertiary, shape = CircleShape)
                 .clickable {
                     pickContact(context) { name, phone ->
                         val formattedPhone =
@@ -152,7 +168,7 @@ fun ContactGridItem(contact: Contact, onDelete: () -> Unit) {
     Box(
         modifier = Modifier
             .size(140.dp)
-            .background(Color.DarkGray, shape = RoundedCornerShape(8.dp))
+            .background(androidx.compose.material3.MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(8.dp))
             .clickable { isExpanded = !isExpanded }
             .padding(8.dp),
         contentAlignment = Alignment.Center
@@ -164,13 +180,13 @@ fun ContactGridItem(contact: Contact, onDelete: () -> Unit) {
         ) {
             Text(
                 text = contact.name,
-                color = Color.White,
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.h6
             )
             if (isExpanded) {
                 Text(
                     text = contact.phoneNumber,
-                    color = Color.LightGray,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier.padding(top = 8.dp)
                 )

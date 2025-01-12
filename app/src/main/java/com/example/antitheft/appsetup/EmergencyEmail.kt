@@ -5,7 +5,18 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -22,7 +33,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -68,7 +84,7 @@ fun EmergencyEmail(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(color = androidx.compose.material3.MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -86,13 +102,13 @@ fun EmergencyEmail(navController: NavHostController) {
                 Icon(
                     imageVector = Icons.Filled.Email,
                     contentDescription = "Emergency Emails Icon",
-                    tint = Color.White,
+                    tint = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Emergency Emails",
-                    color = Color.White,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.h5
                 )
             }
@@ -105,40 +121,42 @@ fun EmergencyEmail(navController: NavHostController) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Name", color = Color.LightGray) },
+                    label = { Text("Name", color = androidx.compose.material3.MaterialTheme.colorScheme.onTertiary) },
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = {}),
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                        .border(1.dp, androidx.compose.material3.MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(8.dp))
                         .focusRequester(focusRequester)
                         .onFocusChanged { focusState.value = it.isFocused },
                     singleLine = true,
-                    textStyle = TextStyle(color = Color.White),  // Text color
+                    textStyle = TextStyle(color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground),  // Text color
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,  // Remove the purple outline
-                        cursorColor = Color.White
+                        cursorColor = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
+                        unfocusedBorderColor = Color.Transparent
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email", color = Color.LightGray) },  // Placeholder for email
+                    label = { Text("Email", color = androidx.compose.material3.MaterialTheme.colorScheme.onTertiary) },  // Placeholder for email
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {}),
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))  // Border around the field
+                        .border(1.dp, androidx.compose.material3.MaterialTheme.colorScheme.onTertiary, RoundedCornerShape(8.dp))  // Border around the field
                         .focusRequester(focusRequester)
                         .onFocusChanged { focusState.value = it.isFocused },
                     singleLine = true,
-                    textStyle = TextStyle(color = Color.White),
+                    textStyle = TextStyle(color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,  // Remove the purple outline
-                        cursorColor = Color.White
+                        cursorColor = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
+                        unfocusedBorderColor = Color.Transparent
                     )
                 )
 
@@ -148,8 +166,8 @@ fun EmergencyEmail(navController: NavHostController) {
             Box(
                 modifier = Modifier
                     .padding(16.dp)
-                    .size(60.dp)
-                    .background(color = Color.Gray, shape = CircleShape)
+                    .size(80.dp)
+                    .background(color = androidx.compose.material3.MaterialTheme.colorScheme.tertiary, shape = CircleShape)
                     .clickable {
                         if (name.isNotEmpty() && email.isNotEmpty()) {
                             val newEmail = EmergencyEmail(name, email)
@@ -172,7 +190,7 @@ fun EmergencyEmail(navController: NavHostController) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "Add Email",
-                    tint = Color.White,
+                    tint = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -204,7 +222,7 @@ fun EmailGridItem(email: EmergencyEmail, onDelete: () -> Unit) {
     Box(
         modifier = Modifier
             .size(140.dp)
-            .background(Color.DarkGray, shape = RoundedCornerShape(8.dp))
+            .background(androidx.compose.material3.MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(8.dp))
             .clickable { isExpanded = !isExpanded }
             .padding(8.dp),
         contentAlignment = Alignment.Center
@@ -216,13 +234,13 @@ fun EmailGridItem(email: EmergencyEmail, onDelete: () -> Unit) {
         ) {
             Text(
                 text = email.name,
-                color = Color.White,
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.h6
             )
             if (isExpanded) {
                 Text(
                     text = email.email,
-                    color = Color.LightGray,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier.padding(top = 8.dp)
                 )

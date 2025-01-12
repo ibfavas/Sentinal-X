@@ -114,8 +114,8 @@ fun AppSetup(
         "Emergency Email" to Color(0xFFC8E6C9), // Light Green
         "Registered Faces" to Color(0xFFFFF9C4), // Light Yellow
         "Pin" to Color(0xFFE1BEE7), // Light Purple
-        "Pattern" to Color(0xFFB2DFDB), // Light Teal
-        "Fingerprint" to Color(0xFFFFCCBC), // Light Orange
+        "Fingerprint" to Color(0xFFB2DFDB), // Light Teal
+        "Password" to Color(0xFFFFCCBC), // Light Orange
         "Theme" to Color(0xFFF8BBD0), // Light Pink
     )
 
@@ -133,7 +133,7 @@ fun AppSetup(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
         ) {
             Column(
                 modifier = Modifier
@@ -148,8 +148,8 @@ fun AppSetup(
                     "Emergency Email" to R.drawable.ic_email,
                     "Registered Faces" to R.drawable.userpic,
                     "Pin" to R.drawable.ic_pin,
-                    "Pattern" to R.drawable.ic_pattern,
                     "Fingerprint" to R.drawable.ic_fingerprint,
+                    "Password" to R.drawable.ic_pattern,
                     "Theme" to R.drawable.ic_gesture,
                 )
 
@@ -175,8 +175,8 @@ fun AppSetup(
                                         "Emergency Contacts" -> navController.navigate("emergency_contacts")
                                         "Emergency Email" -> navController.navigate("emergency_email")
                                         "Pin" -> navController.navigate("pin_lock")
-                                        "Pattern" -> navController.navigate("pattern_lock")
                                         "Fingerprint" -> navController.navigate("fingerprint_lock")
+                                        "Password" -> navController.navigate("password_lock")
                                         "Theme" -> navController.navigate("theme")
                                         else -> navController.navigate("setup/$field")
                                     }

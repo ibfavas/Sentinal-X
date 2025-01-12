@@ -180,7 +180,8 @@ fun HomePage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(androidx.compose.material3.MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
@@ -192,7 +193,7 @@ fun HomePage(
                 // Welcome Header
                 Text(
                     text = "Welcome Back, $userName",
-                    style = MaterialTheme.typography.h5.copy(color = Color.White),
+                    style = MaterialTheme.typography.h5.copy(color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground),
                     modifier = Modifier.align(Alignment.Start)
                 )
 
@@ -259,7 +260,7 @@ fun HomePage(
                             fontStyle = FontStyle.Italic,
                             fontWeight = FontWeight.Bold
                         ),
-                        color = Color.White,
+                        color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
@@ -303,9 +304,9 @@ fun HomePage(
                 {
                     Box(
                         modifier = Modifier
-                            .width(screenWidth / 3) // Set one-third of the screen width
+                            .width(screenWidth / 4) // Set one-third of the screen width
                             .height(200.dp)
-                            .background(Color.DarkGray, shape = RoundedCornerShape(8.dp)) // Add rounded corners to the box
+                            .background(androidx.compose.material3.MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(8.dp)) // Add rounded corners to the box
                             .padding(6.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -316,7 +317,7 @@ fun HomePage(
                                 .fillMaxWidth()
                                 .height(200.dp)
                                 .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 12.dp)) // Adjust the shape to resemble a battery
-                                .border(2.dp, Color.White, RoundedCornerShape(12.dp)) // Adjust border radius to match the new shape
+                                .border(2.dp, androidx.compose.material3.MaterialTheme.colorScheme.onBackground, RoundedCornerShape(12.dp)) // Adjust border radius to match the new shape
                         ) {
 
                             // Liquid filling effect
@@ -369,18 +370,18 @@ fun DrawerScaffold(
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(320.dp)
-                    .background(Color.Black)
+                    .fillMaxWidth()
+                    .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
                     .padding(16.dp)
             ) {
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "Sentinel-X",
-                        style = MaterialTheme.typography.h5.copy(color = Color.White),
+                        style = MaterialTheme.typography.h5.copy(color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
@@ -403,7 +404,7 @@ fun DrawerScaffold(
                     // User Name
                     Text(
                         text = userName,
-                        style = MaterialTheme.typography.subtitle1.copy(color = Color.White),
+                        style = MaterialTheme.typography.subtitle1.copy(androidx.compose.material3.MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier.padding(bottom = 16.dp),
                         textAlign = TextAlign.Center
                     )
@@ -427,14 +428,14 @@ fun DrawerScaffold(
                                 .fillMaxWidth()
                                 .height(50.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.DarkGray,
-                                contentColor = Color.White
+                                containerColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+                                contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
                             )
                         ) {
                             Text(
                                 text = screen.screen.split(" ")
                                     .joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } },
-                                color = Color.White
+                                color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground
                             )
 
                         }
@@ -452,18 +453,18 @@ fun DrawerScaffold(
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Gray,
-                            contentColor = Color.White
+                            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+                            contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onBackground
                         )
                     ) {
-                        Text(text = "Logout", color = Color.White)
+                        Text(text = "Logout", color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground)
                     }
                 }
             }
         },
         topBar = {
             TopAppBar(
-                title = { Text(text = title, color = Color.White) },
+                title = { Text(text = title, color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground) },
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -472,14 +473,14 @@ fun DrawerScaffold(
                             }
                         }
                     ) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
+                        Icon(Icons.Default.Menu, contentDescription = "Menu", tint = androidx.compose.material3.MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                backgroundColor = Color.Black
+                backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.background
             )
         },
-        drawerBackgroundColor = Color.Black,
-        backgroundColor = Color.Black
+        drawerBackgroundColor = Color.Transparent,
+        backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.background
     ) { innerPadding ->
         content(innerPadding)
     }

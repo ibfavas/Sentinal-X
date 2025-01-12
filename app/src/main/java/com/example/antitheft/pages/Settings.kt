@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.antitheft.AuthState
 import com.example.antitheft.AuthViewModel
+import com.example.antitheft.ThemeViewModel
 import com.example.antitheft.ui.NavScreens
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -55,10 +57,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun Settings(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    themeViewModel: ThemeViewModel
 ) {
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
+
+    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
 
     var userName by remember { mutableStateOf("Loading...") }
     var userImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -131,7 +136,7 @@ fun Settings(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
         ) {
             Column(
                 modifier = Modifier
@@ -143,7 +148,7 @@ fun Settings(
                 // Welcome Text
                 Text(
                     text = "Settings",
-                    color = Color.White,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -152,10 +157,10 @@ fun Settings(
                 SettingsToggleItem(
                     icon = Icons.Default.Brightness6,
                     title = "Day/Night Mode",
-                    description = "Switch between day and night themes",
-                    isChecked = true,
-                    onToggle = { /* Handle toggle action */ },
-                    iconColor = Color(0xFFECE29C) // Light Yellow
+                    description = "Switch between light and dark themes",
+                    isChecked = isDarkTheme,
+                    onToggle = { themeViewModel.toggleTheme() },
+                    iconColor = if (isDarkTheme) Color(0xFFECE29C) else Color(0xFF6B6B6B)
                 )
 
                 SettingsListItem(
@@ -281,10 +286,11 @@ fun SettingsToggleItem(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(text = title, fontSize = 18.sp) // Increased font size
+                Text(text = title, fontSize = 18.sp, color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground) // Increased font size
                 Text(
                     text = description,
-                    style = MaterialTheme.typography.caption.copy(fontSize = 14.sp)
+                    style = MaterialTheme.typography.caption.copy(fontSize = 14.sp),
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -314,10 +320,11 @@ fun SettingsListItem(
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
-            Text(text = title, fontSize = 18.sp) // Increased font size
+            Text(text = title, fontSize = 18.sp, color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground) // Increased font size
             Text(
                 text = description,
-                style = MaterialTheme.typography.caption.copy(fontSize = 14.sp)
+                style = MaterialTheme.typography.caption.copy(fontSize = 14.sp),
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground
             )
         }
     }

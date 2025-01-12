@@ -67,6 +67,7 @@ material3Version = "1.3.1"
 megaclient = "4.0.0"
 navigationCompose = "2.8.5"
 onetapcompose = "1.0.14"
+patternlockview = "1.0.0"
 permission = "1.0.0"
 playServicesAds = "23.6.0"
 playServicesAdsLite = "23.6.0"
@@ -153,6 +154,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+patternlockview = { module = "com.andrognito.patternlockview:patternlockview", version.ref = "patternlockview" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 play-services-ads-lite = { module = "com.google.android.gms:play-services-ads-lite", version.ref = "playServicesAdsLite" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }

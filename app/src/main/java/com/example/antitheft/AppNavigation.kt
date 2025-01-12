@@ -11,7 +11,7 @@ import com.example.antitheft.appsetup.EmergencyContacts
 import com.example.antitheft.appsetup.EmergencyEmail
 import com.example.antitheft.appsetup.FaceRegistration
 import com.example.antitheft.appsetup.FingerprintLock
-import com.example.antitheft.appsetup.PatternLock
+import com.example.antitheft.appsetup.PasswordLock
 import com.example.antitheft.appsetup.PinLock
 import com.example.antitheft.appsetup.RegisteredFaces
 import com.example.antitheft.appsetup.Theme
@@ -29,7 +29,8 @@ import com.example.antitheft.pages.SplashScreen
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    themeViewModel: ThemeViewModel // Add ThemeViewModel here
 ) {
     val navController = rememberNavController()
 
@@ -47,7 +48,7 @@ fun AppNavigation(
             HomePage(modifier, navController, authViewModel)
         }
         composable("profile") {
-            Profile(modifier, navController, authViewModel)
+            Profile(modifier, navController, authViewModel, themeViewModel)
         }
         composable("data backup") {
             DataBackup(modifier, navController, authViewModel)
@@ -59,9 +60,10 @@ fun AppNavigation(
             Help(modifier, navController, authViewModel)
         }
         composable("settings") {
-            Settings(modifier, navController, authViewModel)
+            // Pass the ThemeViewModel to the Settings composable
+            Settings(modifier, navController, authViewModel, themeViewModel)
         }
-        composable("face_registration") { // New route for Face Registration
+        composable("face_registration") {
             FaceRegistration(navController = navController)
         }
         composable("registered_faces") {
@@ -76,8 +78,8 @@ fun AppNavigation(
         composable("pin_lock") {
             PinLock(navController = navController)
         }
-        composable("pattern_lock") {
-            PatternLock(navController = navController)
+        composable("password_lock") {
+            PasswordLock(navController = navController, viewModel = themeViewModel)
         }
         composable("theme") {
             Theme(navController = navController)

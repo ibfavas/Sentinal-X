@@ -130,7 +130,7 @@ fun Help(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(brush = androidx.compose.ui.graphics.Brush.verticalGradient(colors = listOf(Color.Black, Color.DarkGray)))
+                .background(color = androidx.compose.material3.MaterialTheme.colorScheme.background)
         ) {
             LazyColumn(
                 modifier = Modifier
@@ -166,14 +166,14 @@ fun FAQItem(question: String, answer: String, backgroundColor: Color) {
     ) {
         Text(
             text = question,
-            color = Color.White,
+            color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.body1,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         if (isExpanded) {
             Text(
                 text = answer,
-                color = Color.White,
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.body2,
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             )
