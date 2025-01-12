@@ -19,6 +19,7 @@ import com.example.antitheft.ui.theme.AppTheme
 import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,14 +39,19 @@ class MainActivity : ComponentActivity() {
             }
         )
 
+        // ViewModels
         val authViewModel: AuthViewModel by viewModels()
-        val themeViewModel: ThemeViewModel by viewModels()
+        val themeViewModel: ThemeViewModel by viewModels {
+            ThemeViewModelFactory(applicationContext)
+        }
 
+        // Set the content view
         setContent {
             AppContent(authViewModel = authViewModel, themeViewModel = themeViewModel)
         }
     }
 
+    // Open the app settings to manually grant permissions if denied
     private fun openAppSettings(activity: Activity) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri = Uri.fromParts("package", activity.packageName, null)
