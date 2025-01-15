@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation (libs.androidx.biometric.ktx.v140alpha02)
     implementation (libs.androidx.biometric)
+    implementation (libs.androidx.work.runtime.ktx)
+    implementation (libs.accompanist.systemuicontroller)
     implementation (libs.androidx.activity.compose.v131)
     implementation (libs.androidx.core.ktx.v170)
     testImplementation(libs.junit)

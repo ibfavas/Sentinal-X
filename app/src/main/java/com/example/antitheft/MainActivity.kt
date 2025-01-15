@@ -12,10 +12,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.antitheft.ui.theme.AppTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
@@ -64,6 +66,23 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppContent(authViewModel: AuthViewModel, themeViewModel: ThemeViewModel) {
     val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+
+    // Use SystemUiController to change the status bar color based on the theme
+    val systemUiController = rememberSystemUiController()
+
+    // Set status bar color and icons based on the theme
+    val statusBarColor = if (isDarkTheme) {
+        MaterialTheme.colorScheme.onBackground // Dark mode status bar color
+    } else {
+        MaterialTheme.colorScheme.background // Light mode status bar color
+    }
+
+    // Apply the status bar color
+    systemUiController.setSystemBarsColor(
+        color = statusBarColor,
+        darkIcons = !isDarkTheme // Dark icons for light theme, light icons for dark theme
+    )
+
 
     AppTheme(darkTheme = isDarkTheme) {
         AppNavigation(authViewModel = authViewModel, themeViewModel = themeViewModel)

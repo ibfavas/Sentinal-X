@@ -116,7 +116,7 @@ fun AppSetup(
         "Pin" to Color(0xFFE1BEE7), // Light Purple
         "Fingerprint" to Color(0xFFB2DFDB), // Light Teal
         "Password" to Color(0xFFFFCCBC), // Light Orange
-        "Theme" to Color(0xFFF8BBD0), // Light Pink
+        "Coming Soon" to Color(0xFFF8BBD0), // Light Pink
     )
 
 
@@ -150,7 +150,7 @@ fun AppSetup(
                     "Pin" to R.drawable.ic_pin,
                     "Fingerprint" to R.drawable.ic_fingerprint,
                     "Password" to R.drawable.ic_pattern,
-                    "Theme" to R.drawable.ic_gesture,
+                    "Coming Soon" to R.drawable.ic_soon,
                 )
 
                 // Use Grid Layout Logic
@@ -177,7 +177,7 @@ fun AppSetup(
                                         "Pin" -> navController.navigate("pin_lock")
                                         "Fingerprint" -> navController.navigate("fingerprint_lock")
                                         "Password" -> navController.navigate("password_lock")
-                                        "Theme" -> navController.navigate("theme")
+                                        "Coming Soon" -> Toast.makeText(context, "Coming Soon", Toast.LENGTH_SHORT).show()
                                         else -> navController.navigate("setup/$field")
                                     }
                                 }

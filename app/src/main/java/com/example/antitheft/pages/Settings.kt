@@ -1,5 +1,6 @@
 package com.example.antitheft.pages
 
+import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -46,9 +47,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.work.WorkManager
 import com.example.antitheft.AuthState
 import com.example.antitheft.AuthViewModel
+import com.example.antitheft.MovementDetector
 import com.example.antitheft.ThemeViewModel
+import com.example.antitheft.getNotificationState
+import com.example.antitheft.getSoundAlertState
+import com.example.antitheft.handleSoundAlertToggle
+import com.example.antitheft.saveNotificationState
+import com.example.antitheft.scheduleNotificationWork
 import com.example.antitheft.ui.NavScreens
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -67,6 +75,62 @@ fun Settings(
 
     var userName by remember { mutableStateOf("Loading...") }
     var userImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    var isSoundAlertEnabled by remember { mutableStateOf(getSoundAlertState(context)) }
+    var isSoundAlertPlaying by remember { mutableStateOf(false) }
+
+    var isNotificationsEnabled by remember { mutableStateOf(getNotificationState(context)) }
+
+
+    val movementDetector = remember(context) {
+        MovementDetector(context) {
+            // Trigger sound alert when movement is detected
+            if (isSoundAlertEnabled && !isSoundAlertPlaying) {
+                // Play sound only if it's not already playing
+                    isSoundAlertPlaying = true
+            }
+        }
+    }
+
+    // Add the send feedback logic
+    val sendFeedbackEmail: () -> Unit = {
+        val recipient = "feedback@example.com"  // Replace with your actual recipient email
+        val subject = "App Feedback"
+        val body = ""
+
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:$recipient")
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+            putExtra(Intent.EXTRA_TEXT, body)
+        }
+
+        // Try to open Gmail explicitly
+        try {
+            val gmailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"))
+            gmailIntent.setPackage("com.google.android.gm") // Gmail package name
+            gmailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
+            gmailIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
+            gmailIntent.putExtra(Intent.EXTRA_TEXT, body)
+            context.startActivity(gmailIntent) // Attempt to open Gmail directly
+        } catch (e: Exception) {
+            // If Gmail is not installed, open the default email app
+            context.startActivity(Intent.createChooser(intent, "Choose an Email client"))
+        }
+    }
+
+    // Start or stop the movement detector depending on the toggle state
+    LaunchedEffect(isSoundAlertEnabled) {
+        if (isSoundAlertEnabled) {
+            movementDetector.start()
+        } else {
+            movementDetector.stop()
+            // Ensure the sound alert is stopped properly when toggled off
+            if (isSoundAlertPlaying) {
+                movementDetector.stopSoundAlert() // Stop sound if playing
+                isSoundAlertPlaying = false // Reset the flag
+            }
+        }
+    }
 
     // Fetch user details from Firebase
     LaunchedEffect(Unit) {
@@ -163,11 +227,12 @@ fun Settings(
                     iconColor = if (isDarkTheme) Color(0xFFECE29C) else Color(0xFF6B6B6B)
                 )
 
-                SettingsListItem(
+                SettingsToggleItem(
                     icon = Icons.Default.VisibilityOff,
                     title = "Stealth Mode",
                     description = "Enable or disable stealth mode",
-                    onClick = { /* Navigate or enable stealth mode */ },
+                    isChecked = true,
+                    onToggle = { /* Navigate or enable stealth mode */ },
                     iconColor = Color(0xFFF39087) // Light Red
                 )
 
@@ -175,27 +240,46 @@ fun Settings(
                     icon = Icons.Default.Notifications,
                     title = "Notifications",
                     description = "Enable or disable notifications",
-                    isChecked = true,
-                    onToggle = { /* Handle toggle action */ },
+                    isChecked = isNotificationsEnabled,
+                    onToggle = { isEnabled ->
+                        isNotificationsEnabled = isEnabled
+                        saveNotificationState(context, isEnabled)
+
+                        if (isEnabled) {
+                            scheduleNotificationWork(context) // Start the periodic notifications
+                        } else {
+                            WorkManager.getInstance(context).cancelUniqueWork("NotificationWork") // Stop the notifications
+                        }
+                    },
                     iconColor = Color(0xFF95D598) // Light Green
                 )
+
 
                 SettingsListItem(
                     icon = Icons.Default.Palette,
                     title = "Themes",
                     description = "Choose app themes",
-                    onClick = { /* Navigate to Themes screen */ },
+                    onClick = {
+                        Toast.makeText(context, "Upcoming Feature", Toast.LENGTH_SHORT).show()
+                        // Navigate to Themes screen or other logic
+                    },
                     iconColor = Color(0xFF98B7D7) // Light Blue
                 )
+
 
                 SettingsToggleItem(
                     icon = Icons.Default.VolumeUp,
                     title = "Sound Alert",
-                    description = "Enable or disable sound alerts",
-                    isChecked = true,
-                    onToggle = { /* Handle toggle action */ },
+                    description = "Enable or disable sound alerts when rigorous movement is detected",
+                    isChecked = isSoundAlertEnabled,
+                    onToggle = { newState ->
+                        isSoundAlertEnabled = newState
+                        handleSoundAlertToggle(context, newState)
+                    },
                     iconColor = Color(0xFFA9E7EF) // Light Cyan
                 )
+
+
 
                 SettingsListItem(
                     icon = Icons.Default.Lock,
@@ -219,16 +303,20 @@ fun Settings(
                     icon = Icons.Default.Feedback,
                     title = "Feedback",
                     description = "Send feedback",
-                    onClick = { /* Navigate to Feedback screen */ },
+                    onClick = sendFeedbackEmail, // Call the function to send email
                     iconColor = Color(0xFFE1DCA9)
                 )
                 SettingsListItem(
                     icon = Icons.Default.PrivacyTip,
                     title = "Privacy Policy",
                     description = "View privacy policy",
-                    onClick = { /* Navigate to Privacy Policy screen */ },
-                    iconColor = Color(0xFFB9DEBA)
+                    onClick = {
+                        // Navigate to Privacy Policy screen
+                        navController.navigate("privacy_policy")
+                    },
+                    iconColor = Color(0xFFB9DEBA) // Light Green
                 )
+
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -256,9 +344,9 @@ fun Settings(
                 }
             }
         }
-
     }
 }
+
 @Composable
 fun SettingsToggleItem(
     icon: ImageVector,
@@ -297,6 +385,7 @@ fun SettingsToggleItem(
         Switch(checked = isChecked, onCheckedChange = onToggle)
     }
 }
+
 @Composable
 fun SettingsListItem(
     icon: ImageVector,

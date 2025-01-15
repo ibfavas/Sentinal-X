@@ -14,12 +14,12 @@ import com.example.antitheft.appsetup.FingerprintLock
 import com.example.antitheft.appsetup.PasswordLock
 import com.example.antitheft.appsetup.PinLock
 import com.example.antitheft.appsetup.RegisteredFaces
-import com.example.antitheft.appsetup.Theme
 import com.example.antitheft.pages.AppSetup
 import com.example.antitheft.pages.DataBackup
 import com.example.antitheft.pages.Help
 import com.example.antitheft.pages.HomePage
 import com.example.antitheft.pages.LoginPage
+import com.example.antitheft.pages.PrivacyPolicyScreen
 import com.example.antitheft.pages.Profile
 import com.example.antitheft.pages.Settings
 import com.example.antitheft.pages.SignupPage
@@ -81,11 +81,11 @@ fun AppNavigation(
         composable("password_lock") {
             PasswordLock(navController = navController, viewModel = themeViewModel)
         }
-        composable("theme") {
-            Theme(navController = navController)
-        }
         composable("fingerprint_lock") {
             FingerprintLock(navController = navController)
+        }
+        composable("privacy_policy"){
+            PrivacyPolicyScreen(navController = navController)
         }
     }
 }

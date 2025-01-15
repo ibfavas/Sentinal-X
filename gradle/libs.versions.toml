@@ -91,10 +91,12 @@ firebaseCrashlyticsBuildtools = "3.0.2"
 firebaseMessaging = "24.1.0"
 biometricKtx = "1.1.0"
 biometricKtxVersion = "1.1.0"
+workRuntimeKtx = "2.10.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 accompanist-permissions-v0280 = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistPermissionsVersion" }
 androidx-activity-compose-v131 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "androidxBiometric" }
 androidx-biometric-ktx-v140alpha02 = { module = "androidx.biometric:biometric-ktx", version.ref = "androidxBiometricKtx" }
@@ -112,6 +114,7 @@ androidx-material-icons-extended = { module = "androidx.compose.material:materia
 androidx-material3-v100 = { module = "androidx.compose.material3:material3", version.ref = "androidxMaterial3Version" }
 androidx-material3-v120 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
