@@ -7,18 +7,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.antitheft.AuthViewModel
 import com.example.antitheft.R
+import com.example.antitheft.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -30,6 +30,9 @@ fun SplashScreen(modifier: Modifier = Modifier, navController: NavController, au
     val isUserLoggedIn = remember {
         authViewModel.isUserLoggedIn()
     }
+
+    val context = LocalContext.current
+    val isStealthModeEnabled = getStealthModeState(context)
 
     LaunchedEffect(key1 = true) {
         scale.animateTo(
@@ -43,7 +46,7 @@ fun SplashScreen(modifier: Modifier = Modifier, navController: NavController, au
         )
         delay(2000L)
 
-        // Navigate based on login state
+        // First check the login status and then stealth mode
         if (isUserLoggedIn) {
             navController.navigate("home") {
                 popUpTo("splash_screen") { inclusive = true }
@@ -53,18 +56,26 @@ fun SplashScreen(modifier: Modifier = Modifier, navController: NavController, au
                 popUpTo("splash_screen") { inclusive = true }
             }
         }
+
+        // After login decision, navigate based on stealth mode status
+        if (!isUserLoggedIn && isStealthModeEnabled) {
+            navController.navigate("calculator")
+        }
     }
 
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Black)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.splashscreen),
-            contentDescription = "Logo",
-            modifier = Modifier.fillMaxSize()
-        )
+    // Wrap the splash screen in a theme that does not affect Stealth Mode UI
+    AppTheme(darkTheme = isStealthModeEnabled) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.Black)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.splashscreen),
+                contentDescription = "Logo",
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }

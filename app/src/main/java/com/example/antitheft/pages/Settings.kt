@@ -1,6 +1,8 @@
 package com.example.antitheft.pages
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -81,6 +83,12 @@ fun Settings(
 
     var isNotificationsEnabled by remember { mutableStateOf(getNotificationState(context)) }
 
+    var isStealthModeEnabled by remember { mutableStateOf(getStealthModeState(context)) }
+
+// Update stealth mode state if changed
+    LaunchedEffect(isStealthModeEnabled) {
+        saveStealthModeState(context, isStealthModeEnabled)
+    }
 
     val movementDetector = remember(context) {
         MovementDetector(context) {
@@ -231,10 +239,22 @@ fun Settings(
                     icon = Icons.Default.VisibilityOff,
                     title = "Stealth Mode",
                     description = "Enable or disable stealth mode",
-                    isChecked = true,
-                    onToggle = { /* Navigate or enable stealth mode */ },
+                    isChecked = isStealthModeEnabled, // Use the local mutable state
+                    onToggle = { isEnabled ->
+                        // Immediately update local state and persist it
+                        isStealthModeEnabled = isEnabled
+                        saveStealthModeState(context, isEnabled) // Persist the change
+                        // Additional behavior: Optionally, you could also trigger any actions related to stealth mode being toggled
+                        if (isEnabled) {
+                            // For example, enable stealth mode-related features
+                        } else {
+                            // For example, disable stealth mode-related features
+                        }
+                    },
                     iconColor = Color(0xFFF39087) // Light Red
                 )
+
+
 
                 SettingsToggleItem(
                     icon = Icons.Default.Notifications,
@@ -417,4 +437,19 @@ fun SettingsListItem(
             )
         }
     }
+}
+
+private const val PREFS_NAME_STEALTH = "StealthModePreferences"
+private const val KEY_STEALTH_MODE = "stealth_mode"
+
+fun saveStealthModeState(context: Context, isEnabled: Boolean) {
+    val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences(PREFS_NAME_STEALTH, Context.MODE_PRIVATE) // Using a different prefs file
+    sharedPreferences.edit().putBoolean(KEY_STEALTH_MODE, isEnabled).apply()
+}
+
+fun getStealthModeState(context: Context): Boolean {
+    val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences(PREFS_NAME_STEALTH, Context.MODE_PRIVATE) // Using a different prefs file
+    return sharedPreferences.getBoolean(KEY_STEALTH_MODE, false)
 }

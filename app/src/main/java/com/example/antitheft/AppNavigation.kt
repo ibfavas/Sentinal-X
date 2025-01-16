@@ -3,6 +3,7 @@ package com.example.antitheft
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,6 +16,7 @@ import com.example.antitheft.appsetup.PasswordLock
 import com.example.antitheft.appsetup.PinLock
 import com.example.antitheft.appsetup.RegisteredFaces
 import com.example.antitheft.pages.AppSetup
+import com.example.antitheft.pages.Calculator
 import com.example.antitheft.pages.DataBackup
 import com.example.antitheft.pages.Help
 import com.example.antitheft.pages.HomePage
@@ -30,11 +32,17 @@ import com.example.antitheft.pages.SplashScreen
 fun AppNavigation(
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel,
-    themeViewModel: ThemeViewModel // Add ThemeViewModel here
+    themeViewModel: ThemeViewModel,
+    stealthModeEnabled: Boolean,
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "splash_screen") {
+    // Reactively manage start destination based on Stealth Mode
+    val startDestination = remember(stealthModeEnabled) {
+        if (stealthModeEnabled) "calculator" else "splash_screen"
+    }
+
+    NavHost(navController = navController, startDestination = startDestination) {
         composable("splash_screen") {
             SplashScreen(modifier, navController, authViewModel)
         }
@@ -60,7 +68,6 @@ fun AppNavigation(
             Help(modifier, navController, authViewModel)
         }
         composable("settings") {
-            // Pass the ThemeViewModel to the Settings composable
             Settings(modifier, navController, authViewModel, themeViewModel)
         }
         composable("face_registration") {
@@ -84,8 +91,11 @@ fun AppNavigation(
         composable("fingerprint_lock") {
             FingerprintLock(navController = navController)
         }
-        composable("privacy_policy"){
+        composable("privacy_policy") {
             PrivacyPolicyScreen(navController = navController)
+        }
+        composable("calculator") {
+            Calculator(navController = navController)
         }
     }
 }

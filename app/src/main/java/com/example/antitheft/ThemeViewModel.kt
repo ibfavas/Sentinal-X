@@ -19,14 +19,14 @@ class ThemeViewModel(private val context: Context) : ViewModel() {
     }
 
     private fun saveTheme(isDark: Boolean) {
-        val sharedPreferences = context.getSharedPreferences("themePrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE) // Using a separate prefs file
         val editor = sharedPreferences.edit()
         editor.putBoolean("isDarkTheme", isDark)
         editor.apply()
     }
 
     private fun loadTheme() {
-        val sharedPreferences = context.getSharedPreferences("themePrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE) // Using a separate prefs file
         _isDarkTheme.value = sharedPreferences.getBoolean("isDarkTheme", false)
     }
 }

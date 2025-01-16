@@ -16,6 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import com.example.antitheft.pages.getStealthModeState
 import com.example.antitheft.ui.theme.AppTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.FirebaseApp
@@ -70,6 +72,9 @@ fun AppContent(authViewModel: AuthViewModel, themeViewModel: ThemeViewModel) {
     // Use SystemUiController to change the status bar color based on the theme
     val systemUiController = rememberSystemUiController()
 
+    val context = LocalContext.current
+    val stealthModeEnabled = getStealthModeState(context)
+
     // Set status bar color and icons based on the theme
     val statusBarColor = if (isDarkTheme) {
         MaterialTheme.colorScheme.onBackground // Dark mode status bar color
@@ -85,6 +90,6 @@ fun AppContent(authViewModel: AuthViewModel, themeViewModel: ThemeViewModel) {
 
 
     AppTheme(darkTheme = isDarkTheme) {
-        AppNavigation(authViewModel = authViewModel, themeViewModel = themeViewModel)
+        AppNavigation(authViewModel = authViewModel, themeViewModel = themeViewModel, stealthModeEnabled = stealthModeEnabled)
     }
 }

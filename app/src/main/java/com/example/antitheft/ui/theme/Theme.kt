@@ -17,7 +17,9 @@ private val LightColorScheme = lightColorScheme(
     onBackground = androidx.compose.ui.graphics.Color.Black,
     onSurface = androidx.compose.ui.graphics.Color.LightGray,
     tertiary = androidx.compose.ui.graphics.Color(0xFFC0DFFF),
-    onTertiary = androidx.compose.ui.graphics.Color.DarkGray
+    onTertiary = androidx.compose.ui.graphics.Color.DarkGray,
+    inversePrimary = androidx.compose.ui.graphics.Color.LightGray
+
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -30,13 +32,13 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = androidx.compose.ui.graphics.Color.White,
     onSurface = androidx.compose.ui.graphics.Color.DarkGray,
     tertiary = androidx.compose.ui.graphics.Color(0xFF64B6F1),
-    onTertiary = androidx.compose.ui.graphics.Color.LightGray
+    onTertiary = androidx.compose.ui.graphics.Color.LightGray,
+    inversePrimary = androidx.compose.ui.graphics.Color.Gray
 )
 
-// AppTheme Composable
 @Composable
 fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = isSystemInDarkTheme(),  // Default to system theme
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) DarkColorScheme else LightColorScheme
@@ -47,3 +49,4 @@ fun AppTheme(
         content = content
     )
 }
+
