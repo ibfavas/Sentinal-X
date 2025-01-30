@@ -301,21 +301,22 @@ fun Settings(
 
 
 
-                SettingsListItem(
+                SettingsToggleItem(
                     icon = Icons.Default.Lock,
-                    title = "App Lock",
-                    description = "Set up app lock for enhanced security",
-                    onClick = { /* Navigate to App Lock screen */ },
+                    title = "Fake Shutdown",
+                    description = "Enable or disable fake shutdown when unknown user is identified",
+                    isChecked = true,
+                    onToggle = {  },
                     iconColor = Color(0xFFDFC3E5) // Light Magenta
                 )
 
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 // Help section
                 Text(
                     text = "Help",
-                    color = Color.White,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
@@ -338,7 +339,7 @@ fun Settings(
                 )
 
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // Save Settings field
                 SettingsListItem(
@@ -352,7 +353,7 @@ fun Settings(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .offset(y=25.dp)
+                        .offset(y=24.dp)
                         .padding(bottom = 6.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {

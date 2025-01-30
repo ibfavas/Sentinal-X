@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -306,7 +307,10 @@ fun HomePage(
                         modifier = Modifier
                             .width(screenWidth / 4) // Set one-third of the screen width
                             .height(200.dp)
-                            .background(androidx.compose.material3.MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(8.dp)) // Add rounded corners to the box
+                            .background(
+                                androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+                                shape = RoundedCornerShape(8.dp)
+                            ) // Add rounded corners to the box
                             .padding(6.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -316,8 +320,19 @@ fun HomePage(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
-                                .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 12.dp)) // Adjust the shape to resemble a battery
-                                .border(2.dp, androidx.compose.material3.MaterialTheme.colorScheme.onBackground, RoundedCornerShape(12.dp)) // Adjust border radius to match the new shape
+                                .clip(
+                                    RoundedCornerShape(
+                                        topStart = 12.dp,
+                                        topEnd = 12.dp,
+                                        bottomStart = 12.dp,
+                                        bottomEnd = 12.dp
+                                    )
+                                ) // Adjust the shape to resemble a battery
+                                .border(
+                                    2.dp,
+                                    androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
+                                    RoundedCornerShape(12.dp)
+                                ) // Adjust border radius to match the new shape
                         ) {
 
                             // Liquid filling effect
@@ -340,16 +355,86 @@ fun HomePage(
                         // Battery percentage text
                         Text(
                             text = "Battery: $batteryPercentage%",
-                            style = MaterialTheme.typography.body2.copy(color = Color.White),
+                            style = MaterialTheme.typography.body2.copy(color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground),
                             modifier = Modifier.align(Alignment.Center)
                         )
                     }
+                    Spacer(modifier = Modifier.width(24.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(
+                                androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+                                shape = RoundedCornerShape(8.dp)
+                            ) // Add rounded corners to the box
+                            .padding(6.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(
+                                    RoundedCornerShape(
+                                        topStart = 12.dp,
+                                        topEnd = 12.dp,
+                                        bottomStart = 12.dp,
+                                        bottomEnd = 12.dp
+                                    )
+                                )
+                                .border(
+                                    2.dp,
+                                    androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
+                                    RoundedCornerShape(12.dp)
+                                ) // Adjust border radius to match the new shape
+                        ) {
+
+                          }
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth() // Take the full width of the screen
+                        .padding(16.dp)
+                        .offset(y=(-20).dp), // Add padding around the Row
+                    horizontalArrangement = Arrangement.Start // Align content to the start (left)
+                ) {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth() // Set one-third of the screen width
+                            .height(200.dp),
+                        ){
+                           Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(
+                                    RoundedCornerShape(
+                                        topStart = 12.dp,
+                                        topEnd = 12.dp,
+                                        bottomStart = 12.dp,
+                                        bottomEnd = 12.dp
+                                    )
+                                )
+                                .border(
+                                    2.dp,
+                                    androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                ) {
+
+                        }
+                        }
+                }
                 }
 
             }
-            }
-        }
+
     }
+}
 
 @Composable
 fun DrawerScaffold(

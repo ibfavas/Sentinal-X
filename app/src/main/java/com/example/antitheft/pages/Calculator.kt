@@ -107,7 +107,7 @@ fun Calculator(navController: NavHostController) {
             listOf("7", "8", "9", "*"),
             listOf("4", "5", "6", "-"),
             listOf("1", "2", "3", "+"),
-            listOf("0", ".", " ", "=")
+            listOf("0", "."," ", "=")
         )
 
         buttons.forEach { row ->
@@ -119,7 +119,7 @@ fun Calculator(navController: NavHostController) {
                     Button(
                         onClick = { onButtonClick(label) },
                         modifier = Modifier
-                            .weight(if (label == "0") 2f else 1f) // Double weight for 0 button
+                            .weight(if (label == "=") 1f else 1f) // Double weight for 0 button
                             .aspectRatio(1f)
                             .padding(8.dp),
                         shape = MaterialTheme.shapes.medium.copy(CornerSize(16.dp)),

@@ -81,6 +81,7 @@ dependencies {
     implementation (libs.accompanist.systemuicontroller)
     implementation (libs.androidx.activity.compose.v131)
     implementation (libs.androidx.core.ktx.v170)
+    implementation(libs.androidx.lifecycle.service)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

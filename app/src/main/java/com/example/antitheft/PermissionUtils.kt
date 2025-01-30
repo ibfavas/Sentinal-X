@@ -27,7 +27,9 @@ object PermissionUtils {
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.READ_CONTACTS,
             android.Manifest.permission.USE_BIOMETRIC,
-            android.Manifest.permission.USE_FINGERPRINT
+            android.Manifest.permission.USE_FINGERPRINT,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
         // Add media-related permissions conditionally based on API level
