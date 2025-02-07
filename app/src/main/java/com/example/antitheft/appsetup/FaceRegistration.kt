@@ -248,4 +248,3 @@ fun mapCameraCoordinatesToScreenCoordinates(
 
     return Offset(mappedX, mappedY)
 }
-

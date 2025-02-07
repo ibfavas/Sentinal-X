@@ -95,7 +95,7 @@ fun Settings(
             // Trigger sound alert when movement is detected
             if (isSoundAlertEnabled && !isSoundAlertPlaying) {
                 // Play sound only if it's not already playing
-                    isSoundAlertPlaying = true
+                isSoundAlertPlaying = true
             }
         }
     }
@@ -311,7 +311,7 @@ fun Settings(
                 )
 
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Help section
                 Text(
@@ -339,7 +339,7 @@ fun Settings(
                 )
 
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Save Settings field
                 SettingsListItem(
@@ -393,7 +393,7 @@ fun SettingsToggleItem(
                 modifier = Modifier.size(32.dp), // Increased size for the icon
                 tint = iconColor
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(text = title, fontSize = 18.sp, color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground) // Increased font size
                 Text(

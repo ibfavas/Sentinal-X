@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -205,7 +206,7 @@ fun Profile(
                 // Profile picture section with clickable options
                 Box(
                     modifier = Modifier
-                        .size(120.dp)
+                        .size(100.dp)
                         .clip(CircleShape)
                         .background(Color.Gray)
                         .border(2.dp, Color.Blue, CircleShape)
@@ -254,55 +255,55 @@ fun Profile(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 // Updated TextFields with proper reference to outlinedTextFieldColors
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
-                                label = { Text("Name") },
-                                placeholder = { Text("Enter your name") },
-                                leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Name Icon") },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                            )
-                            OutlinedTextField(
-                                value = age,
-                                onValueChange = { age = it },
-                                label = { Text("Age") },
-                                placeholder = { Text("Enter your age") },
-                                leadingIcon = { Icon(Icons.Default.Cake, contentDescription = "Age Icon") },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                            )
-                            OutlinedTextField(
-                                value = dob,
-                                onValueChange = { dob = it },
-                                label = { Text("Date of Birth") },
-                                placeholder = { Text("DD/MM/YYYY") },
-                                leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = "DOB Icon") },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                            )
-                            OutlinedTextField(
-                                value = user?.email ?: "Unknown",
-                                onValueChange = {},
-                                label = { Text("Email") },
-                                placeholder = { Text("Email is read-only") },
-                                leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
-                                modifier = Modifier.fillMaxWidth(),
-                                readOnly = true,
-                                shape = RoundedCornerShape(12.dp),
-                            )
-                        }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text("Name") },
+                        placeholder = { Text("Enter your name") },
+                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Name Icon") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                    OutlinedTextField(
+                        value = age,
+                        onValueChange = { age = it },
+                        label = { Text("Age") },
+                        placeholder = { Text("Enter your age") },
+                        leadingIcon = { Icon(Icons.Default.Cake, contentDescription = "Age Icon") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                    OutlinedTextField(
+                        value = dob,
+                        onValueChange = { dob = it },
+                        label = { Text("Date of Birth") },
+                        placeholder = { Text("DD/MM/YYYY") },
+                        leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = "DOB Icon") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                    OutlinedTextField(
+                        value = user?.email ?: "Unknown",
+                        onValueChange = {},
+                        label = { Text("Email") },
+                        placeholder = { Text("Email is read-only") },
+                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email Icon") },
+                        modifier = Modifier.fillMaxWidth(),
+                        readOnly = true,
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                }
 
 
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 // Save profile changes button
                 Button(
@@ -314,14 +315,14 @@ fun Profile(
                         .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp),
                     onClick = {
-                    // Save the profile information
-                    updateUserInfo(name, age, dob, imageUri, context)
+                        // Save the profile information
+                        updateUserInfo(name, age, dob, imageUri, context)
 
-                    // Save the image locally if imageUri is not null
-                    imageUri?.let {
-                        storeImageLocally(it, context)  // Call function to store the image locally
-                    }
-                }) {
+                        // Save the image locally if imageUri is not null
+                        imageUri?.let {
+                            storeImageLocally(it, context)  // Call function to store the image locally
+                        }
+                    }) {
                     Text(
                         text = "Save Profile",
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -330,7 +331,7 @@ fun Profile(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(7.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Column(
                     modifier = Modifier
@@ -387,7 +388,7 @@ fun Profile(
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth(0.5f)
-                        .height(50.dp)
+                        .fillMaxHeight(0.7f)
                         .shadow(6.dp, RoundedCornerShape(12.dp))
                         .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp)
