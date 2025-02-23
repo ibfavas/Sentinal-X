@@ -1,13 +1,9 @@
 package com.example.antitheft.appsetup
 
-//noinspection UsingMaterialAndMaterial3Libraries
-//noinspection UsingMaterialAndMaterial3Libraries
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Environment
 import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -57,11 +53,8 @@ data class Contact(val name: String, val phoneNumber: String)
 fun EmergencyContacts(navController: NavHostController) {
     val context = LocalContext.current
 
-    // Directory for saving contacts
-    val dcimDir = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-        "SentinelX/Contacts"
-    ).apply {
+    // Directory for saving contacts (app-specific storage)
+    val contactsDir = File(context.getExternalFilesDir(null), "SentinelX/Contacts").apply {
         if (!exists()) mkdirs()
     }
 
@@ -70,7 +63,7 @@ fun EmergencyContacts(navController: NavHostController) {
 
     // Load contacts from the file when the screen is displayed
     LaunchedEffect(true) {
-        contacts = loadContactsFromFile(dcimDir)
+        contacts = loadContactsFromFile(contactsDir)
     }
 
     Box(
@@ -118,7 +111,7 @@ fun EmergencyContacts(navController: NavHostController) {
                     ContactGridItem(contact = contact, onDelete = {
                         // Remove contact and update the list
                         contacts = contacts.filterNot { it == contact }
-                        deleteContactFromFile(dcimDir, contact)
+                        deleteContactFromFile(contactsDir, contact)
                     })
                 }
             }
@@ -139,7 +132,7 @@ fun EmergencyContacts(navController: NavHostController) {
                         val newContact = Contact(name, formattedPhone)
 
                         // Save contact to local storage
-                        saveContactToFile(dcimDir, newContact)
+                        saveContactToFile(contactsDir, newContact)
 
                         // Update contact list
                         contacts = contacts + newContact
@@ -159,7 +152,6 @@ fun EmergencyContacts(navController: NavHostController) {
         }
     }
 }
-
 
 @Composable
 fun ContactGridItem(contact: Contact, onDelete: () -> Unit) {
@@ -258,6 +250,7 @@ fun deleteContactFromFile(directory: File, contact: Contact) {
     file.delete()
     tempFile.renameTo(file)
 }
+
 fun loadContactsFromFile(directory: File): List<Contact> {
     val file = File(directory, "contacts.txt")
     val contacts = mutableListOf<Contact>()

@@ -82,6 +82,7 @@ dependencies {
     implementation (libs.androidx.activity.compose.v131)
     implementation (libs.androidx.core.ktx.v170)
     implementation(libs.androidx.lifecycle.service)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

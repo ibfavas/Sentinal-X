@@ -5,22 +5,39 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.hardware.Sensor
+import android.hardware.SensorManager
+import android.location.Location
 import android.os.IBinder
+import android.telephony.SmsManager
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import java.io.File
 
 class MovementDetectionService : Service() {
 
     private lateinit var movementDetector: MovementDetector
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+    private var gyroscope: Sensor? = null
 
     override fun onCreate() {
         super.onCreate()
+
+        // Initialize the SensorManager and sensors
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
         // Initialize the MovementDetector
         movementDetector = MovementDetector(
             context = this,
             onMovementDetected = {
-                Toast.makeText(this, "Movement Detected!", Toast.LENGTH_SHORT).show()
+                // Send SMS to contacts when movement is detected
+                sendSMSToContacts()
+                Toast.makeText(this, "Movement Detected! SMS sent to contacts.", Toast.LENGTH_SHORT).show()
             }
         )
 
@@ -48,8 +65,7 @@ class MovementDetectionService : Service() {
                 channelName,
                 NotificationManager.IMPORTANCE_LOW
             )
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
@@ -65,24 +81,92 @@ class MovementDetectionService : Service() {
         startForeground(1, notification)
     }
 
-
     override fun onBind(intent: Intent?): IBinder? {
         return null // Not used for this service
     }
+
+    // Function to send SMS to contacts
+    private fun sendSMSToContacts() {
+        val contacts = readContactsFromFile()
+
+        // Get the device location
+        getDeviceLocation { location ->
+            val locationMessage = if (location != null) {
+                // Create a Google Maps link with the latitude and longitude
+                "https://www.google.com/maps?q=${location.latitude},${location.longitude}"
+            } else {
+                "Location unavailable"
+            }
+
+            // Create the SMS message with the location link
+            val message = "An unusual movement occurred. Make sure your device is safe with you.\n\nTrack your device here: $locationMessage"
+
+            // Send the SMS to each contact
+            for (contact in contacts) {
+                sendSMS(contact, message)
+            }
+        }
+    }
+
+    // Function to get device location
+    private fun getDeviceLocation(callback: (Location?) -> Unit) {
+        val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        try {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    callback(location) // Pass the location to the callback
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Failed to get location: ${e.message}", Toast.LENGTH_SHORT).show()
+                    callback(null) // Pass null if location retrieval fails
+                }
+        } catch (e: SecurityException) {
+            Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+            callback(null) // Pass null if permission is denied
+        }
+    }
+
+    // Function to read contacts from file
+    private fun readContactsFromFile(): List<String> {
+        val contactsDir = File(getExternalFilesDir(null), "SentinelX/Contacts").apply {
+            if (!exists()) mkdirs()
+        }
+
+        val contactsFile = File(contactsDir, "contacts.txt")
+        return if (contactsFile.exists()) {
+            contactsFile.readLines()
+                .mapNotNull { line ->
+                    // Split the line by comma and take the second part (phone number)
+                    line.split(",").getOrNull(1)?.trim()
+                }
+        } else {
+            emptyList()
+        }
+    }
+
+    // Function to send SMS
+    private fun sendSMS(phoneNumber: String, message: String) {
+        try {
+            val smsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null)
+            Toast.makeText(this, "SMS sent to $phoneNumber", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Failed to send SMS to $phoneNumber: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
-fun startMovementDetectionService(context: Context) {
-    val intent = Intent(context, MovementDetectionService::class.java)
-    context.startService(intent)
-}
-fun stopMovementDetectionService(context: Context) {
-    val intent = Intent(context, MovementDetectionService::class.java)
-    context.stopService(intent)
-}
+
+// Helper function to handle sound alert toggle
 fun handleSoundAlertToggle(context: Context, isEnabled: Boolean) {
     if (isEnabled) {
-        startMovementDetectionService(context)
+        // Start the MovementDetectionService
+        val intent = Intent(context, MovementDetectionService::class.java)
+        context.startService(intent)
     } else {
-        stopMovementDetectionService(context)
+        // Stop the MovementDetectionService
+        val intent = Intent(context, MovementDetectionService::class.java)
+        context.stopService(intent)
     }
+    // Save the sound alert state
     saveSoundAlertState(context, isEnabled)
 }

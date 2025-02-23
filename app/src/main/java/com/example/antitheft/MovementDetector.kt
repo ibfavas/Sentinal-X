@@ -6,8 +6,13 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Location
 import android.media.MediaPlayer
+import android.telephony.SmsManager
 import android.widget.Toast
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import java.io.File
 
 class MovementDetector(
     private val context: Context,
@@ -56,6 +61,9 @@ class MovementDetector(
                         lastAlertTime = currentTime
                         isSoundAlertPlaying = true // Mark sound as playing
                         playSoundAlert(context) // Trigger sound alert
+
+                        // Send SMS to contacts with location
+                        sendSMSToContacts()
                         onMovementDetected() // Optional: Trigger additional movement detected logic
                     }
                 }
@@ -131,6 +139,76 @@ class MovementDetector(
             Toast.makeText(context, "Sound Alert Triggered", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Toast.makeText(context, "Error playing sound alert", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Function to send SMS to contacts
+    private fun sendSMSToContacts() {
+        val contacts = readContactsFromFile()
+
+        // Get the device location
+        getDeviceLocation(context) { location ->
+            val locationMessage = if (location != null) {
+                // Create a Google Maps link with the latitude and longitude
+                "https://www.google.com/maps?q=${location.latitude},${location.longitude}"
+            } else {
+                "Location unavailable"
+            }
+
+            // Create the SMS message with the location link
+            val message = "An unusual movement occurred. Make sure your device is safe with you.\n\nTrack your device here: $locationMessage"
+
+            // Send the SMS to each contact
+            for (contact in contacts) {
+                sendSMS(context, contact, message)
+            }
+        }
+    }
+
+    // Function to read contacts from file
+    private fun readContactsFromFile(): List<String> {
+        val contactsDir = File(context.getExternalFilesDir(null), "SentinelX/Contacts").apply {
+            if (!exists()) mkdirs()
+        }
+
+        val contactsFile = File(contactsDir, "contacts.txt")
+        return if (contactsFile.exists()) {
+            contactsFile.readLines()
+                .mapNotNull { line ->
+                    // Split the line by comma and take the second part (phone number)
+                    line.split(",").getOrNull(1)?.trim()
+                }
+        } else {
+            emptyList()
+        }
+    }
+
+    // Function to send SMS
+    private fun sendSMS(context: Context, phoneNumber: String, message: String) {
+        try {
+            val smsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null)
+            Toast.makeText(context, "SMS sent to $phoneNumber", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to send SMS to $phoneNumber: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Function to get device location
+    private fun getDeviceLocation(context: Context, callback: (Location?) -> Unit) {
+        val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+        try {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    callback(location) // Pass the location to the callback
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Failed to get location: ${e.message}", Toast.LENGTH_SHORT).show()
+                    callback(null) // Pass null if location retrieval fails
+                }
+        } catch (e: SecurityException) {
+            Toast.makeText(context, "Location permission denied", Toast.LENGTH_SHORT).show()
+            callback(null) // Pass null if permission is denied
         }
     }
 }
