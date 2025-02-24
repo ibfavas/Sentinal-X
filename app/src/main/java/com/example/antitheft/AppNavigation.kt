@@ -1,5 +1,6 @@
 package com.example.antitheft
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import com.example.antitheft.pages.SplashScreen
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
+    context : Context,
     authViewModel: AuthViewModel,
     themeViewModel: ThemeViewModel,
     stealthModeEnabled: Boolean,
@@ -95,7 +97,7 @@ fun AppNavigation(
             PrivacyPolicyScreen(navController = navController)
         }
         composable("calculator") {
-            Calculator(navController = navController)
+            Calculator(navController = navController, context = context)
         }
     }
 }

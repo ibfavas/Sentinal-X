@@ -1,15 +1,11 @@
 package com.example.antitheft.appsetup
 
-import android.os.Environment
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,9 +24,8 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -39,13 +34,18 @@ import com.example.antitheft.ThemeViewModel
 import java.io.File
 
 @Composable
-fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
+fun PasswordLock(navController: NavHostController, viewModel: ThemeViewModel) {
     val context = LocalContext.current
-    val passwordDir = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-        "SentinelX/Password"
-    )
-    var stage by remember { mutableStateOf(if (passwordDir.exists()) "change_password" else "register") }
+    val passwordDir = File(context.getExternalFilesDir(null), "SentinelX/Password").apply {
+        parentFile?.mkdirs() // Ensure parent directories exist
+    }
+    val passwordFile = File(passwordDir, "password.txt")
+
+    var stage by remember {
+        mutableStateOf(
+            if (passwordFile.exists()) "change_password" else "register"
+        )
+    }
     var enteredPassword by remember { mutableStateOf("") }
     var confirmedPassword by remember { mutableStateOf("") }
     var oldPassword by remember { mutableStateOf("") }
@@ -54,12 +54,20 @@ fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
     val backgroundResource = if (isDarkTheme) R.drawable.profile_back else R.drawable.whiteback
 
     fun savePassword(password: String) {
-        passwordDir.parentFile?.mkdirs() // Create parent directories if they don't exist
-        passwordDir.writeText(password)
+        try {
+            passwordFile.writeText(password)
+            Toast.makeText(context, "Password saved successfully!", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to save password.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun validateOldPassword(): Boolean {
-        return passwordDir.readText() == oldPassword
+        return try {
+            passwordFile.readText().trim() == oldPassword
+        } catch (e: Exception) {
+            false
+        }
     }
 
     Box(
@@ -77,7 +85,6 @@ fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .offset(y=(-50).dp)
         ) {
             // Lock Icon and Instruction Text
             Text(
@@ -85,7 +92,6 @@ fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
                 fontSize = 40.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(bottom = 16.dp)
-                    .offset(y=(-30).dp)
             )
 
             // Password instruction text
@@ -102,9 +108,6 @@ fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
-            // Move the input field and text upwards
-            Spacer(modifier = Modifier.height(24.dp))
 
             // Password input field with device keyboard
             TextField(
@@ -123,6 +126,7 @@ fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
                         }
                     )
                 },
+                visualTransformation = PasswordVisualTransformation(), // Hide password text
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
@@ -141,7 +145,6 @@ fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
                             "confirm_register" -> {
                                 if (enteredPassword == confirmedPassword) {
                                     savePassword(enteredPassword)
-                                    Toast.makeText(context, "Password successfully registered!", Toast.LENGTH_SHORT).show()
                                     navController.popBackStack() // Navigate back
                                 } else {
                                     Toast.makeText(context, "Passwords do not match. Try again.", Toast.LENGTH_SHORT).show()
@@ -171,7 +174,6 @@ fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
                             "confirm_new_password" -> {
                                 if (enteredPassword == confirmedPassword) {
                                     savePassword(enteredPassword)
-                                    Toast.makeText(context, "Password successfully changed!", Toast.LENGTH_SHORT).show()
                                     navController.popBackStack() // Navigate back
                                 } else {
                                     Toast.makeText(context, "Passwords do not match. Try again.", Toast.LENGTH_SHORT).show()
@@ -182,12 +184,7 @@ fun PasswordLock(navController: NavHostController,viewModel: ThemeViewModel) {
                         }
                     }
                 ),
-                textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground,  // Set the color for the entered password text
-                    fontWeight = FontWeight.Bold  // You can also set a font weight if you want
-                ),
                 modifier = Modifier.fillMaxWidth()
-
             )
         }
     }

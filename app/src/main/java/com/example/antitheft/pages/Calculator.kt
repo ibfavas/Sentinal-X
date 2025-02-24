@@ -1,6 +1,6 @@
 package com.example.antitheft.pages
 
-import android.os.Environment
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +31,7 @@ import java.io.File
 import java.util.Stack
 
 @Composable
-fun Calculator(navController: NavHostController) {
+fun Calculator(navController: NavHostController, context: Context) {
     // States to store user input and results
     var input by remember { mutableStateOf("") }
     var result by remember { mutableStateOf("") }
@@ -51,11 +51,11 @@ fun Calculator(navController: NavHostController) {
                     result = evalResult.toString()
 
                     // Check if the result matches the stored PIN
-                    val dcimDir = File(
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                        "SentinelX/Pin"
-                    )
-                    val storedPin = dcimDir.readText().trim()
+                    val dcimDir = File(context.getExternalFilesDir(null), "SentinelX/Pin").apply {
+                        parentFile?.mkdirs() // Ensure parent directories exist
+                    }
+                    val pinFile = File(dcimDir, "pin.txt")
+                    val storedPin = pinFile.readText().trim()
                     if (input == storedPin) {
                         navController.navigate("splash_screen")
                     }

@@ -1,6 +1,5 @@
 package com.example.antitheft.appsetup
 
-import android.os.Environment
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,23 +33,36 @@ import java.io.File
 @Composable
 fun PinLock(navController: NavHostController) {
     val context = LocalContext.current
-    val dcimDir = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-        "SentinelX/Pin"
-    )
-    var stage by remember { mutableStateOf(if (dcimDir.exists()) "change_pin" else "register") }
+    val dcimDir = File(context.getExternalFilesDir(null), "SentinelX/Pin").apply {
+        parentFile?.mkdirs() // Ensure parent directories exist
+    }
+    val pinFile = File(dcimDir, "pin.txt")
+
+    var stage by remember {
+        mutableStateOf(
+            if (pinFile.exists()) "change_pin" else "register"
+        )
+    }
     var enteredPin by remember { mutableStateOf("") }
     var confirmedPin by remember { mutableStateOf("") }
     var oldPin by remember { mutableStateOf("") }
     val maxPinLength = 4
 
     fun savePin(pin: String) {
-        dcimDir.parentFile?.mkdirs() // Create parent directories if they don't exist
-        dcimDir.writeText(pin)
+        try {
+            pinFile.writeText(pin)
+            Toast.makeText(context, "PIN saved successfully!", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to save PIN.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun validateOldPin(): Boolean {
-        return dcimDir.readText() == oldPin
+        return try {
+            pinFile.readText().trim() == oldPin
+        } catch (e: Exception) {
+            false
+        }
     }
 
     Box(
@@ -148,11 +160,6 @@ fun PinLock(navController: NavHostController) {
                                             "confirm_register" -> {
                                                 if (enteredPin == confirmedPin) {
                                                     savePin(enteredPin)
-                                                    Toast.makeText(
-                                                        context,
-                                                        "PIN successfully registered!",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
                                                     navController.popBackStack() // Navigate back
                                                 } else {
                                                     Toast.makeText(
@@ -190,11 +197,6 @@ fun PinLock(navController: NavHostController) {
                                             "confirm_new_pin" -> {
                                                 if (enteredPin == confirmedPin) {
                                                     savePin(enteredPin)
-                                                    Toast.makeText(
-                                                        context,
-                                                        "PIN successfully changed!",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
                                                     navController.popBackStack() // Navigate back
                                                 } else {
                                                     Toast.makeText(

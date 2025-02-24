@@ -90,6 +90,6 @@ fun AppContent(authViewModel: AuthViewModel, themeViewModel: ThemeViewModel) {
 
 
     AppTheme(darkTheme = isDarkTheme) {
-        AppNavigation(authViewModel = authViewModel, themeViewModel = themeViewModel, stealthModeEnabled = stealthModeEnabled)
+        AppNavigation(authViewModel = authViewModel, context = context, themeViewModel = themeViewModel, stealthModeEnabled = stealthModeEnabled)
     }
 }
