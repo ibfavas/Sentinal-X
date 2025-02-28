@@ -1,6 +1,11 @@
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -72,4 +77,10 @@ object PermissionUtils {
             }
         }
     }
+    fun showLocationPrompt(context: Context, locationLauncher: ActivityResultLauncher<Intent>) {
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        Toast.makeText(context, "Please enable location for Sound Alert", Toast.LENGTH_LONG).show()
+        locationLauncher.launch(intent)
+    }
+
 }

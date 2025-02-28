@@ -1,10 +1,14 @@
 package com.example.antitheft.pages
 
+import PermissionUtils.showLocationPrompt
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.location.LocationManager
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -99,6 +103,22 @@ fun Settings(
             }
         }
     }
+
+    // Add a location settings launcher
+    val locationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // After returning from settings, check if location is enabled
+        if (isLocationEnabled(context)) {
+            Toast.makeText(context, "Location enabled", Toast.LENGTH_SHORT).show()
+            isSoundAlertEnabled = true
+            handleSoundAlertToggle(context, true)
+        } else {
+            Toast.makeText(context, "Location is required for Sound Alert", Toast.LENGTH_LONG).show()
+            isSoundAlertEnabled = false // Reset toggle if location is not enabled
+        }
+    }
+
 
     // Add the send feedback logic
     val sendFeedbackEmail: () -> Unit = {
@@ -293,8 +313,17 @@ fun Settings(
                     description = "Enable or disable sound alerts when rigorous movement is detected",
                     isChecked = isSoundAlertEnabled,
                     onToggle = { newState ->
-                        isSoundAlertEnabled = newState
-                        handleSoundAlertToggle(context, newState)
+                        if (newState) {
+                            if (!isLocationEnabled(context)) {
+                                showLocationPrompt(context, locationLauncher)
+                            } else {
+                                isSoundAlertEnabled = true
+                                handleSoundAlertToggle(context, true)
+                            }
+                        } else {
+                            isSoundAlertEnabled = false
+                            handleSoundAlertToggle(context, false)
+                        }
                     },
                     iconColor = Color(0xFFA9E7EF) // Light Cyan
                 )
@@ -453,4 +482,10 @@ fun getStealthModeState(context: Context): Boolean {
     val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME_STEALTH, Context.MODE_PRIVATE) // Using a different prefs file
     return sharedPreferences.getBoolean(KEY_STEALTH_MODE, false)
+}
+
+fun isLocationEnabled(context: Context): Boolean {
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 }
