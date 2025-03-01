@@ -227,7 +227,7 @@ fun openMega(context: Context) {
     } else {
         // If Mega app is not installed, open the Mega webpage
         val fallbackIntent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse("https://mega.nz/") // Mega web page
+            data = Uri.parse("https://mega.io/") // Mega web page
         }
         context.startActivity(fallbackIntent) // Open Mega web page in browser
     }
