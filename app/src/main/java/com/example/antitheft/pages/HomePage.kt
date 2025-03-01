@@ -1,6 +1,7 @@
 package com.example.antitheft.pages
 
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
@@ -376,22 +377,20 @@ fun HomePage(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
-                                .clip(
-                                    RoundedCornerShape(
-                                        topStart = 12.dp,
-                                        topEnd = 12.dp,
-                                        bottomStart = 12.dp,
-                                        bottomEnd = 12.dp
-                                    )
-                                )
-                                .border(
-                                    2.dp,
-                                    androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
-                                    RoundedCornerShape(12.dp)
-                                ) // Adjust border radius to match the new shape
+                                .clip(RoundedCornerShape(12.dp))
+                                .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
+                                .background(Color.Black)
+                                .clickable {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://open.spotify.com/album/4FviRd7FubuuGNVt2qME1G?si=GoQIt8bhSH-CUZEmvBTi3g"))
+                                    context.startActivity(intent)
+                                }
                         ) {
-
-                          }
+                            Image(
+                                painter = painterResource(id = R.drawable.gd), // Replace with your image
+                                contentDescription = "Displayed Image",
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
                 }
                 Row(
@@ -407,25 +406,20 @@ fun HomePage(
                             .fillMaxWidth() // Set one-third of the screen width
                             .height(200.dp),
                         ){
-                           Box(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
-                                .clip(
-                                    RoundedCornerShape(
-                                        topStart = 12.dp,
-                                        topEnd = 12.dp,
-                                        bottomStart = 12.dp,
-                                        bottomEnd = 12.dp
-                                    )
-                                )
-                                .border(
-                                    2.dp,
-                                    androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
-                                    RoundedCornerShape(12.dp)
-                                )
-                                ) {
-
+                                .clip(RoundedCornerShape(12.dp))
+                                .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
+                                .background(Color.Black) // Optional background color
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ubermensch), // Replace with your image
+                                contentDescription = "Displayed Image",
+                                modifier = Modifier.fillMaxSize()
+                                    .fillMaxHeight()
+                            )
                         }
                         }
                 }
