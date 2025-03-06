@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +24,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
+
+    private var volumeUpPressed = false
+    private var volumeDownPressed = false
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +58,38 @@ class MainActivity : ComponentActivity() {
             AppContent(authViewModel = authViewModel, themeViewModel = themeViewModel)
         }
     }
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            volumeUpPressed = true
+        }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            volumeDownPressed = true
+        }
+
+        // If both keys are pressed, launch PowerMenuActivity
+        if (volumeUpPressed && volumeDownPressed) {
+            startActivity(Intent(this, PowerMenuActivity::class.java))
+            resetVolumeKeys() // Reset the keys after triggering
+        }
+
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            volumeUpPressed = false
+        }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            volumeDownPressed = false
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
+    private fun resetVolumeKeys() {
+        volumeUpPressed = false
+        volumeDownPressed = false
+    }
+
 
     // Open the app settings to manually grant permissions if denied
     private fun openAppSettings(activity: Activity) {

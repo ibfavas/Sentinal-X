@@ -78,6 +78,31 @@
             android:exported="false"
             android:foregroundServiceType="location"/>
 
+        <receiver android:name=".PowerButtonReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_OFF" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".PowerMenuActivity"
+            android:theme="@style/Theme.AntiTheft"
+            android:exported="true"
+            android:launchMode="singleTask">
+        </activity>
+
+        <receiver android:name=".PowerMenuWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
 
         <!-- Main Activity Declaration -->
         <activity
