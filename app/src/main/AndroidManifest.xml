@@ -28,6 +28,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"/>
+    <uses-permission android:name="android.permission.BIND_DEVICE_ADMIN"
+        tools:ignore="ProtectedPermissions" />
+
+
 
 
     <!-- Camera Permission -->
@@ -85,12 +91,24 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".PowerMenuActivity"
-            android:theme="@style/Theme.AntiTheft"
+        <receiver
+            android:name=".MyDeviceAdminReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+
+        <activity android:name=".PowerMenuActivity"
             android:exported="true"
-            android:launchMode="singleTask">
-        </activity>
+            android:launchMode="singleTask"
+            android:taskAffinity="com.example.antitheft.PowerMenu"/>
 
         <receiver android:name=".PowerMenuWidgetProvider"
             android:exported="false">
@@ -102,7 +120,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
-
 
         <!-- Main Activity Declaration -->
         <activity
