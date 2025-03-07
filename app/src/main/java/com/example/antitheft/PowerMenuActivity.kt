@@ -504,9 +504,25 @@ fun PowerMenuScreen(activity: Activity) {
 
 fun sendTelegramAlert(context: Context, faceImage: Bitmap) {
     val token = "8051104224:AAGGCwcYwSY2cmnveEX15cMoJCW6KBw8zTY" // Your bot token
-    val chatId = "6480264079" // Your chat ID
-    val imageFile = saveImageToStorage(context, faceImage)
+    val storageDir = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+        "SentinelX/Telegram"
+    )
 
+    val telegramIdsFile = File(storageDir, "telegram_ids.txt")
+    if (!telegramIdsFile.exists()) {
+        Log.e("TelegramAlert", "No Telegram IDs found.")
+        return
+    }
+
+    // Read all Telegram IDs from the file
+    val telegramIds = telegramIdsFile.readLines().filter { it.isNotBlank() }
+    if (telegramIds.isEmpty()) {
+        Log.e("TelegramAlert", "Telegram ID list is empty.")
+        return
+    }
+
+    val imageFile = saveImageToStorage(context, faceImage)
     if (imageFile == null) {
         Log.e("TelegramAlert", "Failed to save face image.")
         return
@@ -515,29 +531,29 @@ fun sendTelegramAlert(context: Context, faceImage: Bitmap) {
     val url = "https://api.telegram.org/bot$token/sendPhoto"
 
     CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("chat_id", chatId)
-                .addFormDataPart("photo", imageFile.name, imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull()))
-                .addFormDataPart("caption", "🚨 *Unauthorized Access Detected!* 🚨\nCheck the attached image.") // Message caption
-                .build()
+        for (chatId in telegramIds) {
+            try {
+                val requestBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("chat_id", chatId.trim()) // Send to each ID
+                    .addFormDataPart("photo", imageFile.name, imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull()))
+                    .addFormDataPart("caption", "🚨 *Unauthorized Access Detected!* 🚨\nCheck the attached image.")
+                    .build()
 
-            val request = Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build()
+                val request = Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build()
 
-            val client = OkHttpClient()
-            val response = client.newCall(request).execute()
-            Log.d("TelegramAlert", "Response: ${response.body?.string()}")
-        } catch (e: Exception) {
-            Log.e("TelegramAlert", "Failed to send Telegram alert: ${e.message}")
+                val client = OkHttpClient()
+                val response = client.newCall(request).execute()
+                Log.d("TelegramAlert", "Sent to $chatId: ${response.body?.string()}")
+            } catch (e: Exception) {
+                Log.e("TelegramAlert", "Failed to send to $chatId: ${e.message}")
+            }
         }
     }
 }
-
-
 
 @Composable
 fun PowerButton(text: String, color: Color, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {

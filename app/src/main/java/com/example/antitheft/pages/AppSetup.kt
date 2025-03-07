@@ -111,7 +111,7 @@ fun AppSetup(
     val fieldColors = mapOf(
         "Face Registration" to Color(0xFFBBDEFB), // Light Blue
         "Emergency Contacts" to Color(0xFFFFCDD2), // Light Red
-        "Emergency Email" to Color(0xFFC8E6C9), // Light Green
+        "Telegram ID" to Color(0xFFC8E6C9), // Light Green
         "Registered Faces" to Color(0xFFFFF9C4), // Light Yellow
         "Pin" to Color(0xFFE1BEE7), // Light Purple
         "Fingerprint" to Color(0xFFB2DFDB), // Light Teal
@@ -145,7 +145,7 @@ fun AppSetup(
                 val fields = listOf(
                     "Face Registration" to R.drawable.ic_face_registration,
                     "Emergency Contacts" to R.drawable.ic_emergency_contacts,
-                    "Emergency Email" to R.drawable.ic_email,
+                    "Telegram ID" to R.drawable.ic_email,
                     "Registered Faces" to R.drawable.userpic,
                     "Pin" to R.drawable.ic_pin,
                     "Fingerprint" to R.drawable.ic_fingerprint,
@@ -173,7 +173,7 @@ fun AppSetup(
                                         "Face Registration" -> navController.navigate("face_registration")
                                         "Registered Faces" -> navController.navigate("registered_faces")
                                         "Emergency Contacts" -> navController.navigate("emergency_contacts")
-                                        "Emergency Email" -> navController.navigate("emergency_email")
+                                        "Telegram ID" -> navController.navigate("telegram_id")
                                         "Pin" -> navController.navigate("pin_lock")
                                         "Fingerprint" -> navController.navigate("fingerprint_lock")
                                         "Password" -> navController.navigate("password_lock")

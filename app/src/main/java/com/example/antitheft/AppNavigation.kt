@@ -10,12 +10,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.antitheft.appsetup.EmergencyContacts
-import com.example.antitheft.appsetup.EmergencyEmail
 import com.example.antitheft.appsetup.FaceRegistration
 import com.example.antitheft.appsetup.FingerprintLock
 import com.example.antitheft.appsetup.PasswordLock
 import com.example.antitheft.appsetup.PinLock
 import com.example.antitheft.appsetup.RegisteredFaces
+import com.example.antitheft.appsetup.TelegramIDScreen
 import com.example.antitheft.pages.AppSetup
 import com.example.antitheft.pages.Calculator
 import com.example.antitheft.pages.DataBackup
@@ -81,8 +81,8 @@ fun AppNavigation(
         composable("emergency_contacts") {
             EmergencyContacts(navController = navController)
         }
-        composable("emergency_email") {
-            EmergencyEmail(navController = navController)
+        composable("telegram_id") {
+            TelegramIDScreen(navController = navController)
         }
         composable("pin_lock") {
             PinLock(navController = navController)
