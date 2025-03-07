@@ -123,5 +123,7 @@ dependencies {
     implementation(libs.face.detection)
     implementation(libs.play.services.mlkit.face.detection)
     implementation(libs.gson)
+    implementation(libs.okhttp)
+
 
 }
