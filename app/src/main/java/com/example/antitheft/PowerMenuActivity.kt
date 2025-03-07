@@ -503,8 +503,8 @@ fun PowerMenuScreen(activity: Activity) {
 }
 
 fun sendTelegramAlert(context: Context, faceImage: Bitmap) {
-    val token = "8051104224:AAGGCwcYwSY2cmnveEX15cMoJCW6KBw8zTY" // Your bot token
-    val chatId = "6480264079" // Your chat ID
+    val token = "" // Your bot token
+    val chatId = "" // Your chat ID
     val imageFile = saveImageToStorage(context, faceImage)
 
     if (imageFile == null) {
