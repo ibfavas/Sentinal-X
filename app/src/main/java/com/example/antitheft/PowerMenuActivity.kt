@@ -1,5 +1,6 @@
 package com.example.antitheft
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
@@ -7,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -55,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.example.antitheft.pages.FakeShutdownScreen
+import com.google.android.gms.location.LocationServices
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
@@ -502,6 +505,7 @@ fun PowerMenuScreen(activity: Activity) {
     }
 }
 
+@SuppressLint("MissingPermission")
 fun sendTelegramAlert(context: Context, faceImage: Bitmap) {
     val token = "8051104224:AAGGCwcYwSY2cmnveEX15cMoJCW6KBw8zTY" // Your bot token
     val storageDir = File(
@@ -515,7 +519,6 @@ fun sendTelegramAlert(context: Context, faceImage: Bitmap) {
         return
     }
 
-    // Read all Telegram IDs from the file
     val telegramIds = telegramIdsFile.readLines().filter { it.isNotBlank() }
     if (telegramIds.isEmpty()) {
         Log.e("TelegramAlert", "Telegram ID list is empty.")
@@ -528,32 +531,48 @@ fun sendTelegramAlert(context: Context, faceImage: Bitmap) {
         return
     }
 
-    val url = "https://api.telegram.org/bot$token/sendPhoto"
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-    CoroutineScope(Dispatchers.IO).launch {
-        for (chatId in telegramIds) {
-            try {
-                val requestBody = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("chat_id", chatId.trim()) // Send to each ID
-                    .addFormDataPart("photo", imageFile.name, imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull()))
-                    .addFormDataPart("caption", "🚨 *Unauthorized Access Detected!* 🚨\nCheck the attached image.")
-                    .build()
+    fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+        val locationMessage = if (location != null) {
+            "📍 [Track Device Location](https://maps.google.com/?q=${location.latitude},${location.longitude})"
+        } else {
+            "📍 Location unavailable"
+        }
 
-                val request = Request.Builder()
-                    .url(url)
-                    .post(requestBody)
-                    .build()
+        val url = "https://api.telegram.org/bot$token/sendPhoto"
 
-                val client = OkHttpClient()
-                val response = client.newCall(request).execute()
-                Log.d("TelegramAlert", "Sent to $chatId: ${response.body?.string()}")
-            } catch (e: Exception) {
-                Log.e("TelegramAlert", "Failed to send to $chatId: ${e.message}")
+        CoroutineScope(Dispatchers.IO).launch {
+            for (chatId in telegramIds) {
+                try {
+                    val requestBody = MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("chat_id", chatId.trim())
+                        .addFormDataPart("photo", imageFile.name, imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull()))
+                        .addFormDataPart(
+                            "caption",
+                            "🚨 *Unauthorized Access Detected!* 🚨\nCheck the attached image.\n\n$locationMessage"
+                        )
+                        .build()
+
+                    val request = Request.Builder()
+                        .url(url)
+                        .post(requestBody)
+                        .build()
+
+                    val client = OkHttpClient()
+                    val response = client.newCall(request).execute()
+                    Log.d("TelegramAlert", "Sent to $chatId: ${response.body?.string()}")
+                } catch (e: Exception) {
+                    Log.e("TelegramAlert", "Failed to send to $chatId: ${e.message}")
+                }
             }
         }
+    }.addOnFailureListener {
+        Log.e("TelegramAlert", "Failed to get location: ${it.message}")
     }
 }
+
 
 @Composable
 fun PowerButton(text: String, color: Color, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
