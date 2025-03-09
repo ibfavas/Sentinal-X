@@ -97,7 +97,7 @@ fun TelegramIDScreen(navController: NavHostController) {
             OutlinedTextField(
                 value = telegramId,
                 onValueChange = { telegramId = it },
-                label = { Text("Enter Telegram ID", color = androidx.compose.material3.MaterialTheme.colorScheme.onTertiary) },
+                label = { Text("Enter Chat ID from @RawDatabot", color = androidx.compose.material3.MaterialTheme.colorScheme.onTertiary) },
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = {}),
                 modifier = Modifier
@@ -145,6 +145,18 @@ fun TelegramIDScreen(navController: NavHostController) {
                     modifier = Modifier.size(40.dp)
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Instruction Text
+            Text(
+                text = "Go to Telegram and start @SentinalXIntbot for alerts.",
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.body2,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
