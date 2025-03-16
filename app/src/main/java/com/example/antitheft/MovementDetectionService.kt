@@ -95,7 +95,7 @@ class MovementDetectionService : Service() {
                 // Create a Google Maps link with the latitude and longitude
                 "https://www.google.com/maps?q=${location.latitude},${location.longitude}"
             } else {
-                "Location unavailable"
+                "https://maps.app.goo.gl/CgmQqk9VbDfi2k99A"
             }
 
             // Create the SMS message with the location link

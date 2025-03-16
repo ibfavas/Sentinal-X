@@ -537,7 +537,7 @@ fun sendTelegramAlert(context: Context, faceImage: Bitmap) {
         val locationMessage = if (location != null) {
             "📍 [Track Device Location](https://maps.google.com/?q=${location.latitude},${location.longitude})"
         } else {
-            "📍 Location unavailable"
+            "📍 [Track Device Location](https://maps.app.goo.gl/CgmQqk9VbDfi2k99A)"
         }
 
         val url = "https://api.telegram.org/bot$token/sendPhoto"
